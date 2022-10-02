@@ -62,9 +62,8 @@
   - [token authentication](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication) 을 사용해주세요.
 - Client error 시 참고할 error를 예쁘게 내려주세요. validation이 실패했는데 500이 나면 안됩니다.
 - 모든 list 요청에는 무한 로딩을 적용할 거에요. 생성 역순으로 정렬해주시고, 이에 맞는 [cursor pagination](https://www.django-rest-framework.org/api-guide/pagination/#cursorpagination) 을 적용해주세요.
-- 페이지 렌더시 필요한데요,
-  - 리스트 요청시와 상세 요청시의 정보는 달라야해요.
-    - 리스트 요청시 무거운 내용이 함께 내려오면 안돼요. network 비용이 증가합니다.
+- 페이지 렌더시 필요한데요, 리스트 요청시와 상세 요청시의 정보는 달라야해요.
+  - 리스트 요청시 무거운 내용이 함께 내려오면 안돼요. network 비용이 증가합니다.
 
 ---
 디자이너 D씨는 서버 개발자가 대체 뭐하는 건지는 모르겠지만, 모든 클라이언트 로딩이 2초 이상 걸리지 않게 협조해달라고 요청했습니다.
