@@ -74,6 +74,9 @@
 #### 추가 점수: Tag 기능
 (꼭 구현할 필요는 없지만, 구현시 추가 점수가 부여됩니다. 구현했을시 PR 제목에 언급해주세요.)
 
+<details>
+<summary>여기를 클릭하기!</summary>
+
 C씨는 post에도, comment에도 태그를 달고 추후 이 태그로 알고리즘을 돌리는 게 블로그 서비스의 핵심 차별성이라고 하셨습니다.
 
 - [ ] Tag 
@@ -90,6 +93,8 @@ C씨는 post에도, comment에도 태그를 달고 추후 이 태그로 알고�
   - [ ] Comment list by tag
     - [ ] 해당 태그가 달린 Post List를 불러올 수 있다.
     - [ ] (인증) 회원 / 비회원 모두 Comment list by tag를 불러올 수 있다.
+
+</details>
 
 ---
 ## 제출
