@@ -76,7 +76,7 @@
 <details>
 <summary>여기를 클릭하기!</summary>
 
-C씨는 post에도, comment에도 태그를 달고 추후 이 태그로 알고리즘을 돌리는 게 블로그 서비스의 핵심 차별성이라고 하셨습니다.
+C씨는 post에도, comment에도 태그를 달고 추후 이 태그로 알고리즘을 돌리는 게 large 블로그 서비스의 핵심 차별성이라고 하셨습니다.
 
 - [ ] Tag 
   - [ ] Create
