@@ -10,6 +10,8 @@
 
 ## The large blog service
 
+![미디엄 대안](./medium-alternative.webp)
+
 여러분은 medium에서 나와, 새로운 블로그의 Rest API를 설계해아 하는 스타트업 서버 개발자가 되었습니다. 
 
 이런! 협업할 서버 개발자는 따로 없습니다.
@@ -56,7 +58,7 @@
 
 클라이언트는 우선 React 개발자인 R씨 한명입니다. R씨는 다음과 같이 요청했습니다.
 
-- 인증을 server side에서 빡세게 구현해주세요. Frontend에서 인증 로직을 빡세게 걸진 않을거에요.
+- 인증을 server side에서 API별로 빡세게 구현해주세요. Frontend에서 인증 로직을 빡세게 걸진 않을거에요.
   - [token authentication](https://www.django-rest-framework.org/api-guide/authentication/#tokenauthentication) 을 사용해주세요.
 - Client error 시 참고할 error를 예쁘게 내려주세요. validation이 실패했는데 500이 나면 안됩니다.
 - 모든 list 요청에는 무한 로딩을 적용할 거에요. 이에 맞는 [cursor pagination](https://www.django-rest-framework.org/api-guide/pagination/#cursorpagination) 을 적용해주세요.
