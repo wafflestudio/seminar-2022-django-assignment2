@@ -16,36 +16,36 @@
 
 기획자이자 대표 C씨는 우리 블로그는 다른 서비스와 무언가 다를거라고 강조하면서, 다음과 같이 유저 스토리를 작성해주셨습니다. 하단 유저 스토리들을 하나씩 구현해나가야 합니다. 
 ### 유저 스토리
-- [ ]: Users
-  - [ ]: Create  
-    - [ ]: 유저는 아이디와 비밀번호로 서비스에 가입할 수 있다.
-    - [ ]: 비밀번호는 hash된 상태로 DB 테이블에 저장되어야 한다.
-- [ ]: Admin 
-  - [ ]: admin user의 경우 모든 authentication을 무시하고 요청을 날릴 수 있어야 한다.
-- [ ]: Post 
-  - [ ]: Create 
-  - [ ]: List 
-    - [ ]: (인증) 유저 / 비유저 모두 리스트 요청을 날릴 수 있다.
-    - [ ]: Post 내용은 List 요청시 최대 앞 300자만 보낸다.
-  - [ ]: Detail 
-    - [ ]: (인증) 유저 / 비유저 모두 리스트 요청을 날릴 수 있다.
-  - [ ]: Delete 
-  - [ ]: Update 
-- [ ]: Comment 
-  - [ ]: Create 
-  - [ ]: List 
-  - [ ]: Update 
-  - [ ]: Delete 
+- [ ] Users
+  - [ ] Create  
+    - [ ] 유저는 아이디와 비밀번호로 서비스에 가입할 수 있다.
+    - [ ] 비밀번호는 hash된 상태로 DB 테이블에 저장되어야 한다.
+- [ ] Admin 
+  - [ ] admin user의 경우 모든 authentication을 무시하고 요청을 날릴 수 있어야 한다.
+- [ ] Post 
+  - [ ] Create 
+  - [ ] List 
+    - [ ] (인증) 유저 / 비유저 모두 리스트 요청을 날릴 수 있다.
+    - [ ] Post 내용은 List 요청시 최대 앞 300자만 보낸다.
+  - [ ] Detail 
+    - [ ] (인증) 유저 / 비유저 모두 리스트 요청을 날릴 수 있다.
+  - [ ] Delete 
+  - [ ] Update 
+- [ ] Comment 
+  - [ ] Create 
+  - [ ] List 
+  - [ ] Update 
+  - [ ] Delete 
 
 
 #### 추가 점수
 꼭 구현할 필요는 없지만, 구현시 추가 점수가 부여됩니다.
-- [ ]: Tag 
-  - [ ]: Create
-  - [ ]: Update
-  - [ ]: Delete
-  - [ ]: Post List by Tag
-  - [ ]: Comment list by tag
+- [ ] Tag 
+  - [ ] Create
+  - [ ] Update
+  - [ ] Delete
+  - [ ] Post List by Tag
+  - [ ] Comment list by tag
 
 
 클라이언트는 우선 React 개발자인 R씨 한명입니다. R씨는 다음과 같이 요청했습니다.
