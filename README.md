@@ -42,7 +42,7 @@
 - [ ] Comment
   - [ ] Create 
     - [ ] (인증) 비회원은 Comment를 생성할 수 없고, 오직 회원만 가능하다.
-    - [ ] 당연히 해당 내용들은 필요하다. 다른 내용도 필요할수도?: `post, created_by, created_at, updated_at, description, is_updated`
+    - [ ] 당연히 해당 내용들은 필요하다. 다른 내용도 필요할수도?: `post, created_by, created_at, updated_at, content, is_updated`
   - [ ] Detail은 따로 없다.
   - [ ] List 
     - [ ] (인증) 회원 / 비회원 모두 리스트 요청을 날릴 수 있다.
