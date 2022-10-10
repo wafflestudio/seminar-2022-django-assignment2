@@ -10,7 +10,8 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
 
-    tag = models.ManyToManyField('Tag')
+    create_tag = models.CharField(max_length=200)
+    tag = models.ManyToManyField('Tag', related_name='tag_by_post')
 
     def __str__(self):
         return self.title
@@ -23,7 +24,8 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     content = models.CharField(max_length=100)
 
-    tag = models.ManyToManyField('Tag')
+    create_tag = models.CharField(max_length=200)
+    tag = models.ManyToManyField('Tag', related_name='tag_by_comment')
 
     def __str__(self):
         return self.content
