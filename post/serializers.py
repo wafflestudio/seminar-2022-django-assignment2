@@ -25,13 +25,23 @@ class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         # ordering = 생성 역순
         # 단, 이때 descriptino의 글자 제한해야함
-        fields = ('created_by', 'created_at', 'title', 'description')
+        fields = (
+            'created_by',
+            'created_at',
+            'title',
+            'summary_for_list_api'
+        )
         model = Post
 
 
-class PostDetailSerialzier(serializers.ModelSerializer):
+class PostDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        fields = ('created_by', 'created_at', 'title', 'description', 'tag')
+        fields = (
+            'created_by',
+            'created_at',
+            'title',
+            'description',
+            'tag')
         model = Post
         extra_kwargs = {'tag': {'required': False}}
 
