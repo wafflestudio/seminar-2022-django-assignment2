@@ -8,6 +8,7 @@ from rest_framework import status
 from .models import Post, Comment, Tag
 from .serializers import PostDetailSerializer, PostListSerializer, CommentSerializer, TagPostSerializer, TagCommentSerializer, UserSerializer
 from .permissions import IsAuthorOrReadOnly
+from .pagination import PostPagination, CommentPagination, TagPagination
 import ast
 import json
 
@@ -37,6 +38,7 @@ class PostList(generics.ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
     permission_class = (IsAuthorOrReadOnly, )
+    pagination_class = PostPagination
 
     def post(self, request, *args, **kwargs):
         created_by = request.user
@@ -76,6 +78,7 @@ class CommentList(generics.ListCreateAPIView):
     permission_class = (IsAuthorOrReadOnly, )
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+    pagination_class = CommentPagination
 
     def post(self, request, *args, **kwargs):
         created_by = request.user
@@ -109,6 +112,7 @@ class TagPostList(generics.ListCreateAPIView):
     permission_class = (IsAuthorOrReadOnly, )
     queryset = Tag.objects.all()
     serializer_class = TagPostSerializer
+    pagination_class = TagPagination
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)
@@ -118,6 +122,7 @@ class TagCommentList(generics.ListCreateAPIView):
     permission_class = (IsAuthorOrReadOnly, )
     queryset = Tag.objects.all()
     serializer_class = TagCommentSerializer
+    pagination_class = TagPagination
 
     def get(self, request, *args, **kwargs):
         return super().get(request, *args, **kwargs)

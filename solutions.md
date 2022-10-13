@@ -44,3 +44,13 @@ class BookSerializer(serializers.ModelSerializer):
 ```
 https://github.com/nomadcoders/nomadgram/tree/master/nomadgram
 노마드그램 참고하기 Django임
+
+admin 참고
+https://dandavies99.github.io/posts/2021/11/django-permissions/
+https://realpython.com/manage-users-in-django-admin/
+
+pagination
+https://velog.io/@jewon119/TIL00.-DRF-Pagination-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0
+
+대댓글 기능
+https://velog.io/@suasue/Django-%EC%9D%B8%EC%8A%A4%ED%83%80%EA%B7%B8%EB%9E%A8-%ED%81%B4%EB%A1%A0-%EC%BD%94%EB%94%A910-%EB%8C%80%EB%8C%93%EA%B8%80-%EB%8B%AC%EA%B8%B0
