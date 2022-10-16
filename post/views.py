@@ -1,16 +1,12 @@
-from django.shortcuts import render
 from django.contrib.auth import authenticate
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from rest_framework.exceptions import PermissionDenied
 from rest_framework import status
 from .models import Post, Comment, Tag
 from .serializers import PostDetailSerializer, PostListSerializer, CommentSerializer, TagPostSerializer, TagCommentSerializer, UserSerializer
 from .permissions import IsAuthorOrReadOnly
 from .pagination import PostPagination, CommentPagination, TagPagination
-import ast
-import json
 
 # Create your views here.
 
@@ -32,6 +28,18 @@ class LoginView(APIView):
             return Response({"token": user.auth_token.key})
         else:
             return Response({"error": "Wrong Credentials"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ProfileView(generics.ListAPIView):
+    pass
+
+
+class NotificationList(generics.ListAPIView):
+    pass
+
+
+class ClapseList(generics.ListAPIView):
+    pass
 
 
 class PostList(generics.ListCreateAPIView):

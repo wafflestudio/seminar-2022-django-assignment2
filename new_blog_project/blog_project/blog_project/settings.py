@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-b)491jol52dj*cj#x-tmzw_ypy^c=p(271x&$fuev&-0aa7=)u'
+SECRET_KEY = 'django-insecure-_=s^!b)mserfh3bb_euhm(3t1ppkiy6vmfmaa@qhbho-zocfpi'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -38,9 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'post',
+    'notification',
+    'user',
     'rest_framework',
     'rest_framework.authtoken',
 ]
+
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
@@ -52,7 +55,8 @@ REST_FRAMEWORK = {
     ]
 }
 
-AUTH_USER_MODEL = "post.BlogUser"
+AUTH_USER_MODEL = "user.User"
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
