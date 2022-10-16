@@ -1,14 +1,12 @@
-from sqlite3 import Cursor
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
-from rest_framework.pagination import CursorPagination
 from rest_framework import serializers
-from .models import Post, Comment, Tag
+from .models import Post, Comment, Tag, BlogUser
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
+        model = BlogUser
         fields = ('username', 'email', 'password')
         extra_kwargs = {'password': {'write_only': True}}
 

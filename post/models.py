@@ -1,10 +1,10 @@
 from re import T
 from django.db import models
-from django.contrib.auth.models import User, AbstractUser
+from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 
-class User(AbstractUser):
+class BlogUser(AbstractUser):
 
     # profile
     nickname = models.CharField(max_length=20)
@@ -34,7 +34,8 @@ class User(AbstractUser):
 
 class Post(models.Model):
 
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(
+        BlogUser, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=100)
@@ -63,18 +64,16 @@ class Post(models.Model):
 class Comment(models.Model):
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(
+        BlogUser, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_updated = models.BooleanField()
     content = models.TextField()
     parent_comment = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True)
-    create_tag = models.CharField(max_length=200)
+    create_tag = models.CharField(max_length=200, null=True)
     tag = models.ManyToManyField('Tag', related_name='tag_by_comment')
-
-    class Meta:
-        ordering = ['created_at']
 
     def __str__(self):
         return self.content
@@ -83,7 +82,8 @@ class Comment(models.Model):
 class Clapse(models.Model):
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+    created_by = models.ForeignKey(
+        BlogUser, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -100,14 +100,6 @@ class Tag(models.Model):
         return self.name
 
 
-class ReadingList(models.Model):
-
-    name = models.CharField(max_length=100)
-    description = models.CharField(max_length=200)
-    is_private = models.BooleanField()
-    list_of_post = models.ManyToManyField('post', null=True)
-
-
 class Notification(models.Model):
 
     TYPE_CHOICES = (
@@ -116,11 +108,15 @@ class Notification(models.Model):
         ('follow', 'Follow')
     )
 
-    notify_from = models.ForeignKey(User, related_name='from')
-    notify_to = models.ForeignKey(User, related_name='to')
+    notify_from = models.ForeignKey(
+        BlogUser, on_delete=models.CASCADE, related_name='notify_from')
+    notify_to = models.ForeignKey(
+        BlogUser, on_delete=models.CASCADE, related_name='notify_to')
     notification_type = models.CharField(max_length=20, choices=TYPE_CHOICES)
-    post = models.ForeignKey(Post, null=True, blank=True)
+    post = models.ForeignKey(
+        Post, on_delete=models.CASCADE, null=True, blank=True)
     comment = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['-created_at']
