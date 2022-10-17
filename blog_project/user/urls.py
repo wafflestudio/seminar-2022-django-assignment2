@@ -8,4 +8,3 @@ urlpatterns = [
     path('unfollow/<str:username>/', UnFollowUser.as_view()),
     path('profile/', UserProfile.as_view()),
 ]
-# RegisterUser, LoginView, FollowUser, UnFollowUser, UserProfile

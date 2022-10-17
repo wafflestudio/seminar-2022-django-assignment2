@@ -8,7 +8,7 @@ class PostListSerializer(serializers.ModelSerializer):
             'created_by',
             'created_at',
             'title',
-            'summary_for_list_api',
+            'summary_for_listing',
             'clapse_count',
             'comment_count'
         )
@@ -26,7 +26,8 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'n_min_read',
             'clapse_count',
             'comment_count',
-            'tag'
+            'tag',
+            'summary_for_listing'
         )
         model = Post
         extra_kwargs = {'tag': {'required': False}}

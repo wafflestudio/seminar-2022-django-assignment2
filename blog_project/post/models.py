@@ -13,7 +13,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     summary_for_listing = models.CharField(max_length=300, null=True)
-    n_min_read = models.IntegerField()
+    n_min_read = models.IntegerField(null=True)
     create_tag = models.CharField(max_length=200, null=True)
     tag = models.ManyToManyField('Tag', related_name='tag_by_post')
 

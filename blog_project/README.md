@@ -7,3 +7,10 @@
 	"url":"https://tomatolife.tistory.com"
 }
 ```
+
+```json
+{
+	"username":"superuser",
+	"password":"superuserpassword"
+}
+```
