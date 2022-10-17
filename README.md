@@ -90,7 +90,7 @@ C씨는 post에도, comment에도 태그를 달고 추후 이 태그로 알고�
     - [ ] 해당 태그가 달린 Post List를 불러올 수 있다.
     - [ ] (인증) 회원 / 비회원 모두 Post list by tag를 불러올 수 있다.
   - [ ] Comment list by tag
-    - [ ] 해당 태그가 달린 Post List를 불러올 수 있다.
+    - [ ] 해당 태그가 달린 Comment List를 불러올 수 있다.
     - [ ] (인증) 회원 / 비회원 모두 Comment list by tag를 불러올 수 있다.
 
 </details>
