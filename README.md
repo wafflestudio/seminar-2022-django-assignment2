@@ -1,4 +1,4 @@
-# Medium alternative : Large Scale Blog service
+# Medium alternative : Large Scale Blog Service
 ![logo_new](https://user-images.githubusercontent.com/81140673/196366827-142b7ced-6cf0-426b-b72c-a1f7b68e7b60.png)
 - 작성자 : 박용주 (2022.10.13)
 
