@@ -16,7 +16,8 @@ class Post(models.Model):
     summary_for_listing = models.CharField(max_length=300, null=True)
     n_min_read = models.IntegerField(null=True)
     create_tag = models.CharField(max_length=200, null=True)
-    tag = models.ManyToManyField('Tag', related_name='tag_by_post')
+    tag = models.ManyToManyField(
+        'Tag', related_name='tag_by_post', blank=True, null=True)
 
     @property
     def clapse_count(self):
@@ -25,14 +26,6 @@ class Post(models.Model):
     @property
     def comment_count(self):
         return self.comment.all().count()
-
-    def tag_save(self):
-        tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)')
-        tag_regex = re.compile(tag_regex)
-        tags = tag_regex.findall(self.create_tag)
-        for t in tags:
-            tag = Tag.objects.get_or_create(name=t)
-            self.tag.add(tag)
 
     def __str__(self):
         return self.title

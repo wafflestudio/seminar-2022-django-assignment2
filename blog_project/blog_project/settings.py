@@ -42,8 +42,11 @@ INSTALLED_APPS = [
     'user',
     'rest_framework',
     'rest_framework.authtoken',
+    'taggit',
 ]
 
+TAGGIT_CASE_INSENSITIVE = True
+TAGGIT_LIMIT = 50
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [

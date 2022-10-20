@@ -1,56 +1,75 @@
-## 낙서장
-```python
->>> from post.models import Post, Comment, Tag
->>> from django.contrib.auth.models import User
->>> testuser = User.objects.create_user(username="testuser", password="password")
->>> p = Post.objects.create(title="Title", description="description", created_by=testuser)
->>> testtag = Tag.objects.create(name="tagname", content="content")
->>> p.tag.add(testtag)
->>> p.tag.all()
-<QuerySet [<Tag: tagname>]>
-```
+# Test
+- 성공/실패 : 예상 결과에 맞게 나오는지
+- 에러 핸들링 : 예상치 못한 결과를 얼마나 잘 처리하는지
+- 하나의 함수를 테스트
+- test_forms.py, test_models.py, test_views.py
+- django-webtest
+- coverage
+- django-discover-runner
+- factory_boy, model_mommy
+- https://realpython.com/testing-in-django-part-1-best-practices-and-examples/
+- 마저 읽고 실행해보기
 
-```python
-class BookSerializer(serializers.ModelSerializer):
-    authors = AuthorSerializer(many=True, read_only=True)
-
-    class Meta:
-        ordering = ['-id']
-        model = Book
-        fields = ("id", "title", "description", "publisher", "release_date", "authors")
-        extra_kwargs = {'authors': {'required': False}}
-```
-- Book 과 Author가 ManytoManyField
-
+## User
+- v1/user/register/
 ```json
 {
-	"username":"tomato",
-	"password":"tomatohello"
+	"username":"username1",
+	"password":"password1",
+	"nickname":"nickname1",
+	"short_bio":"my name is youngzoo park",
+	"url":"https://tomatolife.tistory.com/"
+}
+{
+	"username":"username2",
+	"password":"password2",
+	"nickname":"nickname2",
+	"short_bio":"my name is youngzoo park",
+	"url":"https://tomatolife.tistory.com/"
 }
 ```
+
+- v1/user/login/
+```json
+{
+	"username":"username",
+	"password":"password"
+}
+```
+
+- v1/user/follow/<str:username>/
+- v1/user/unfollow/<str:username>/
+- v1/user/profile/
+  
+## Post
+- v1/post/
 ```json
 {
 	"title":"title",
-	"description":"description",
-	"create_tag":"tag, tag, tag"
+	"description":"post content",
+	"create_tag":"#post #django #backend #python"
 }
 ```
+
+- v1/post/<int:pk>/
+- v1/post/<int:pk>/comment/
 ```json
 {
-	"title":"title",
-	"description":"maintenance will be difficult and the OCP principle will be violatedOCP: (Open-Closed Principle)Software entities (classes, modules, functions, etc.) should be open for extension but closed for change.Problem solvingImplemented so that FactoryClass does not change even when services are added.maintenance will be difficult and the OCP principle will be violatedOCP: (Open-Closed Principle)Software entities (classes, modules, functions, etc.) should be open for extension but closed for change.Problem solvingImplemented so that FactoryClass does not change even when services are addedmaintenance will be difficult and the OCP principle will be violatedOCP: (Open-Closed Principle)Software entities (classes, modules, functions, etc.) should be open for extension but closed for change.Problem solvingImplemented so that FactoryClass does not change even when services are addedmaintenance will be difficult and the OCP principle will be violatedOCP: (Open-Closed Principle)Software entities (classes, modules, functions, etc.) should be open for extension but closed for change.Problem solvingImplemented so that FactoryClass does not change even when services are added",
-	"create_tag":"tag, tag, tag"
+	"content":"comment 남기고 갑니다",
+	"parent_comment":1, 
+	"create_tag":"#comment #tag #hashtag #create_tag"
 }
 ```
-https://github.com/nomadcoders/nomadgram/tree/master/nomadgram
-노마드그램 참고하기 Django임
 
-admin 참고
-https://dandavies99.github.io/posts/2021/11/django-permissions/
-https://realpython.com/manage-users-in-django-admin/
+- v1/post/<int:pk>/comment/<int:pk2>/
+- v1/post/<int:pk>/clapse/
+- v1/post/<int:pk>/unclapse/
+- v1/post/tag/post/<str:tagname>
+- v1/post/tag/comment/<str:tagname>/
 
-pagination
-https://velog.io/@jewon119/TIL00.-DRF-Pagination-%EC%A0%81%EC%9A%A9%ED%95%98%EA%B8%B0
+## Notification
+- v1/notification/
 
-대댓글 기능
-https://velog.io/@suasue/Django-%EC%9D%B8%EC%8A%A4%ED%83%80%EA%B7%B8%EB%9E%A8-%ED%81%B4%EB%A1%A0-%EC%BD%94%EB%94%A910-%EB%8C%80%EB%8C%93%EA%B8%80-%EB%8B%AC%EA%B8%B0
+# 개선사항
+- photo(ImageField)는 postman으로 어떻게 보내야하는지
+  https://askcodes.net/coding/insomnia-upload-pic-and-post-data-at-same-time

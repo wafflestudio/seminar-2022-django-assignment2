@@ -7,6 +7,7 @@ from user import models as user_models
 from user import serializers as user_serializers
 from user.permissions import IsAuthorOrReadOnly
 from notification import views as notification_views
+import re
 
 # Create your views here.
 
@@ -26,7 +27,17 @@ class PostList(APIView):
         created_by = request.user
         summary_for_listing = request.data["description"][:300]
         n_min_read = len(request.data["description"]) / 200
+        create_tag = request.data.get("create_tag")
+        print(type(create_tag))
+        tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)', create_tag)
+        print(tag_regex)
+
         serializer = PostDetailSerializer(data=request.data)
+
+        for t in tag_regex:
+            tag = Tag.objects.get_or_create(name=t)
+            serializer.tag.add(tag=tag)
+
         if (serializer.is_valid()):
             serializer.save(
                 created_by=created_by,
@@ -90,6 +101,11 @@ class CommentList(APIView):
         parent_comment = request.data.get("parent_comment", None)
 
         if post is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            parent_comment = Comment.objects.get(pk=parent_comment)
+        except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = CommentDetailSerializer(data=request.data)

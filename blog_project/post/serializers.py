@@ -15,25 +15,6 @@ class PostListSerializer(serializers.ModelSerializer):
         model = Post
 
 
-class PostDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        fields = (
-            'created_by',
-            'created_at',
-            'updated_at',
-            'title',
-            'description',
-            'n_min_read',
-            'clapse_count',
-            'comment_count',
-            'create_tag',
-            'tag',
-            'summary_for_listing'
-        )
-        model = Post
-        extra_kwargs = {'tag': {'required': False}}
-
-
 class CommentListSerializer(serializers.ModelSerializer):
     class Meta:
         fields = (
@@ -97,3 +78,23 @@ class TagCommentSerializer(serializers.ModelSerializer):
         )
         model = Tag
         extra_kwargs = {'comment': {'required': False}}
+
+
+class PostDetailSerializer(serializers.ModelSerializer):
+    tag = TagPostSerializer(many=True, allow_null=True)
+
+    class Meta:
+        fields = (
+            'created_by',
+            'created_at',
+            'updated_at',
+            'title',
+            'description',
+            'n_min_read',
+            'clapse_count',
+            'comment_count',
+            'create_tag',
+            'tag',
+            'summary_for_listing',
+        )
+        model = Post
