@@ -87,13 +87,19 @@ class CommentList(APIView):
     def post(self, request, pk, format=None):
         created_by = request.user
         post = Post.objects.get(pk=pk)
+        parent_comment = request.data.get("parent_comment", None)
+
         if post is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = CommentDetailSerializer(data=request.data)
 
         if serializer.is_valid():
-            serializer.save(created_by=created_by, post=post)
+            serializer.save(
+                created_by=created_by,
+                post=post,
+                parent_comment=parent_comment
+            )
             notification_views.create_notification(
                 created_by, post.created_by, 'comment', post, serializer.data['message']
             )
@@ -102,52 +108,153 @@ class CommentList(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk, format=None):
-        post = Post.objects.get(pk=pk)
-        if post is None:
+        post = Post.objects.filter(pk=pk)
+        comment = Comment.objects.filter(post=post)
+
+        if comment is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = CommentListSerializer(
+            comment, many=True, context={'request': request}
+        )
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class CommentDetail(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
 
-    def put(self, request, pk, format=None):
-        pass
+    def put(self, request, pk, pk2, format=None):
+        post = Post.objects.filter(pk=pk)
+        comment = Comment.objects.get(post=post, pk=pk2)
+        is_updated = True
 
-    def delete(self, request, pk, format=None):
-        pass
+        if comment is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        serializer = CommentDetailSerializer(
+            comment, data=request.data, partial=True
+        )
+        if serializer.is_valid():
+            serializer.save(is_updated=is_updated)
+            return Response(data=serializer.data, status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, pk2, format=None):
+        post = Post.objects.filter(pk=pk)
+        comment = Comment.objects.get(post=post, pk=pk2)
+
+        if comment is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+        comment.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ClapseList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
 
-    def get():
-        pass
+    def get(self, request, pk, format=None):
+        clapse = Clapse.objects.filter(post__pk=pk)
+        clapse_created_by_ids = clapse.values('created_by')
+        created_by = user_models.objects.filter(
+            username__in=clapse_created_by_ids)
+        serializer = user_serializers.UserSerializer(
+            created_by, many=True, context={'request': request}
+        )
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-    def post():
-        pass
+    def post(self, request, pk, format=None):
+        created_by = request.user
+
+        try:
+            find_post = Post.objects.get(pk=pk)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            preexisting_clapse = Clapse.objects.get(
+                post=find_post,
+                created_by=created_by
+            )
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
+        except:
+            clapse = Clapse.objects.create(
+                post=find_post,
+                created_by=created_by
+            )
+            clapse.save()
+            notification_views.create_notification(
+                created_by, find_post.created_by, 'like', find_post
+            )
+            return Response(status=status.HTTP_201_CREATED)
 
 
 class UnClapseList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
 
-    def destroy():
-        pass
+    def delete(self, request, pk, format=None):
+        created_by = request.user
+
+        try:
+            find_post = Post.objects.get(pk=pk)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            preexisting_clapse = Clapse.objects.get(
+                created_by=created_by,
+                post=find_post
+            )
+            preexisting_clapse.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except:
+            return Response(status=status.HTTP_304_NOT_MODIFIED)
 
 
 class TagPostList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
 
-    def get():
-        pass
+    def get(self, request, tagname, format=None):
+
+        try:
+            tag = Tag.objects.filter(name=tagname)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            post = Post.objects.filter(tag__in=tag)
+            serializer = PostListSerializer(
+                post, many=True, context={'request': request}
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 
 class TagCommentList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
 
-    def get():
-        pass
+    def get(self, request, tagname, format=None):
+
+        try:
+            tag = Tag.objects.filter(name=tagname)
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        try:
+            comment = Comment.objects.filter(tag__in=tag)
+            serializer = CommentListSerializer(
+                comment, many=True, context={'request': request}
+            )
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)

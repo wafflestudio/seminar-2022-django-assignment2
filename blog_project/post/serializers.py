@@ -26,6 +26,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'n_min_read',
             'clapse_count',
             'comment_count',
+            'create_tag',
             'tag',
             'summary_for_listing'
         )
@@ -53,8 +54,10 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'is_updated',
+            'create_tag',
             'content',
-            'tag'
+            'tag',
+            'parent_comment'
         )
         model = Comment
 

@@ -1,5 +1,6 @@
 from django.db import models
 from user.models import User
+import re
 
 # Create your models here.
 
@@ -25,6 +26,14 @@ class Post(models.Model):
     def comment_count(self):
         return self.comment.all().count()
 
+    def tag_save(self):
+        tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)')
+        tag_regex = re.compile(tag_regex)
+        tags = tag_regex.findall(self.create_tag)
+        for t in tags:
+            tag = Tag.objects.get_or_create(name=t)
+            self.tag.add(tag)
+
     def __str__(self):
         return self.title
 
@@ -44,6 +53,14 @@ class Comment(models.Model):
         'self', on_delete=models.CASCADE, null=True)
     create_tag = models.CharField(max_length=200, null=True)
     tag = models.ManyToManyField('Tag', related_name='tag_by_comment')
+
+    def tag_save(self):
+        tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)')
+        tag_regex = re.compile(tag_regex)
+        tags = tag_regex.findall(self.create_tag)
+        for t in tags:
+            tag = Tag.objects.get_or_create(name=t)
+            self.tag.add(tag)
 
     def __str__(self):
         return self.content

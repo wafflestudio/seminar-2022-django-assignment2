@@ -118,7 +118,7 @@
 |Class|Method|Authentication|
 |-|-|-|
 |PostList|Get|X|
-||Post|O|
+| |Post|O|
 |PostDetail|Get|X|
 | |Put|O|
 | |Delete|O|
@@ -164,9 +164,5 @@
 <br></br>
 
 ## environment
-<<<<<<< HEAD
 - Windows wsl
 - requirements.txt
-=======
-- requirements.txt
->>>>>>> main

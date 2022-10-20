@@ -13,5 +13,5 @@ urlpatterns = [
     path('<int:pk>/clapse/', ClapseList.as_view()),
     path('<int:pk>/unclapse/', UnClapseList.as_view()),
     path('tag/post/', TagPostList.as_view()),
-    path('tag/comment/', TagCommentList.as_view())
+    path('tag/comment/<str:tagname>', TagCommentList.as_view())
 ]
