@@ -73,3 +73,22 @@
 # 개선사항
 - photo(ImageField)는 postman으로 어떻게 보내야하는지
   https://askcodes.net/coding/insomnia-upload-pic-and-post-data-at-same-time
+
+# manytomanyfield serializer & view 구현 방법
+- models
+  - class Room
+    - amenities = ..
+  - class Amenity
+    - name
+    - description
+
+- views
+  - 
+
+- 내 케이스
+- models
+  - class Post
+    - tags
+  - class Comment
+    - tags
+  - class Tag

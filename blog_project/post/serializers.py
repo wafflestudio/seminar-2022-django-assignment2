@@ -22,7 +22,7 @@ class CommentListSerializer(serializers.ModelSerializer):
             'created_by',
             'created_at',
             'content',
-            'tag'
+            'tags'
         )
         model = Comment
 
@@ -37,7 +37,7 @@ class CommentDetailSerializer(serializers.ModelSerializer):
             'is_updated',
             'create_tag',
             'content',
-            'tag',
+            'tags',
             'parent_comment'
         )
         model = Comment
@@ -53,17 +53,12 @@ class ClapseSerializer(serializers.ModelSerializer):
 
 
 class TagPostSerializer(serializers.ModelSerializer):
-    posts = PostListSerializer(many=True, read_only=True)
-
     class Meta:
         fields = (
             'name',
-            'created_at',
-            'content',
-            'post'
+            'created_at'
         )
         model = Tag
-        extra_kwargs = {'post': {'required': False}}
 
 
 class TagCommentSerializer(serializers.ModelSerializer):
@@ -81,7 +76,10 @@ class TagCommentSerializer(serializers.ModelSerializer):
 
 
 class PostDetailSerializer(serializers.ModelSerializer):
-    tag = TagPostSerializer(many=True, allow_null=True)
+    tags = TagPostSerializer(
+        many=True,
+        required=False
+    )
 
     class Meta:
         fields = (
@@ -94,7 +92,7 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'clapse_count',
             'comment_count',
             'create_tag',
-            'tag',
+            'tags',
             'summary_for_listing',
         )
         model = Post

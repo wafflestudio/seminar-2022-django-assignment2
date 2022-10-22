@@ -16,8 +16,8 @@ class Post(models.Model):
     summary_for_listing = models.CharField(max_length=300, null=True)
     n_min_read = models.IntegerField(null=True)
     create_tag = models.CharField(max_length=200, null=True)
-    tag = models.ManyToManyField(
-        'Tag', related_name='tag_by_post', blank=True, null=True)
+    tags = models.ManyToManyField(
+        'post.Tag', related_name='tag_by_post', blank=True)
 
     @property
     def clapse_count(self):
@@ -40,20 +40,13 @@ class Comment(models.Model):
         User, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_updated = models.BooleanField()
+    is_updated = models.BooleanField(default=False, null=True)
     content = models.TextField()
     parent_comment = models.ForeignKey(
         'self', on_delete=models.CASCADE, null=True)
     create_tag = models.CharField(max_length=200, null=True)
-    tag = models.ManyToManyField('Tag', related_name='tag_by_comment')
-
-    def tag_save(self):
-        tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)')
-        tag_regex = re.compile(tag_regex)
-        tags = tag_regex.findall(self.create_tag)
-        for t in tags:
-            tag = Tag.objects.get_or_create(name=t)
-            self.tag.add(tag)
+    tags = models.ManyToManyField(
+        'Tag', related_name='tag_by_comment', blank=True)
 
     def __str__(self):
         return self.content
@@ -73,7 +66,6 @@ class Clapse(models.Model):
 class Tag(models.Model):
     name = models.CharField(max_length=30)
     created_at = models.DateTimeField(auto_now_add=True)
-    content = models.CharField(max_length=100)
 
     def __str__(self):
         return self.name

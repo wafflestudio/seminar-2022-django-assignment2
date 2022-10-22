@@ -24,34 +24,32 @@ class PostList(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, format=None):
-        created_by = request.user
-        summary_for_listing = request.data["description"][:300]
-        n_min_read = len(request.data["description"]) / 200
-        create_tag = request.data.get("create_tag")
-        print(type(create_tag))
-        tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)', create_tag)
-        print(tag_regex)
-
         serializer = PostDetailSerializer(data=request.data)
-
-        for t in tag_regex:
-            tag = Tag.objects.get_or_create(name=t)
-            serializer.tag.add(tag=tag)
-
-        if (serializer.is_valid()):
-            serializer.save(
+        if serializer.is_valid():
+            created_by = request.user
+            summary_for_listing = request.data["description"][:300]
+            n_min_read = 1 + len(request.data["description"]) / 200
+            post = serializer.save(
                 created_by=created_by,
                 summary_for_listing=summary_for_listing,
                 n_min_read=n_min_read
             )
-            return Response(
-                data=serializer.data,
-                status=status.HTTP_201_CREATED
+            create_tag = request.data.get("create_tag")
+            tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)', create_tag)
+            tags_list = [Tag.objects.get_or_create(
+                name=t) for t in tag_regex]
+            for tag, bool in tags_list:
+                post.tags.add(tag.pk)
+            post.save()
+            serializer = PostDetailSerializer(
+                post,
+                context={"request": request},
             )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             return Response(
-                data=serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
+                serializer.errors,
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
 
@@ -72,9 +70,11 @@ class PostDetail(APIView):
         post = Post.objects.get(pk=pk)
         if post is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
         serializer = PostDetailSerializer(
             post, data=request.data, partial=True
         )
+
         if serializer.is_valid():
             serializer.save(created_by=created_by)
             return Response(data=serializer.data, status=status.HTTP_204_NO_CONTENT)
@@ -96,11 +96,10 @@ class CommentList(APIView):
     permission_class = (IsAuthorOrReadOnly, )
 
     def post(self, request, pk, format=None):
-        created_by = request.user
         post = Post.objects.get(pk=pk)
-        parent_comment = request.data.get("parent_comment", None)
 
         if post is None:
+            print("no post exist")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         try:
@@ -109,15 +108,29 @@ class CommentList(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = CommentDetailSerializer(data=request.data)
-
         if serializer.is_valid():
-            serializer.save(
+            created_by = request.user
+            parent_comment = request.data.get("parent_comment", None)
+
+            comment = serializer.save(
                 created_by=created_by,
                 post=post,
                 parent_comment=parent_comment
             )
+            create_tag = request.data.get("create_tag")
+            tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)', create_tag)
+            tags_list = [Tag.objects.get_or_create(name=t) for t in tags_regex]
+            for tag, bool in tags_list:
+                comment.tags.add(tag.pk)
+            comment.save()
+
             notification_views.create_notification(
                 created_by, post.created_by, 'comment', post, serializer.data['message']
+            )
+
+            serializer = CommentDetailSerializer(
+                comment,
+                context={"request": request},
             )
             return Response(data=serializer.data, status=status.HTTP_201_CREATED)
         else:
