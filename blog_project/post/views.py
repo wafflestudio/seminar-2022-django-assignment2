@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import PostListSerializer, PostDetailSerializer, ClapseSerializer, TagCommentSerializer, TagPostSerializer, CommentDetailSerializer, CommentListSerializer
 from .models import Post, Clapse, Comment, Tag
-from user import models as user_models
+from user.models import User as user_models
 from user import serializers as user_serializers
 from user.permissions import IsAuthorOrReadOnly
 from notification import views as notification_views
@@ -102,10 +102,12 @@ class CommentList(APIView):
             print("no post exist")
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            parent_comment = Comment.objects.get(pk=parent_comment)
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        parent_comment = request.data.get("parent_comment")
+        if parent_comment is not None:
+            try:
+                parent_comment = Comment.objects.get(pk=parent_comment)
+            except:
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
         serializer = CommentDetailSerializer(data=request.data)
         if serializer.is_valid():
@@ -119,13 +121,14 @@ class CommentList(APIView):
             )
             create_tag = request.data.get("create_tag")
             tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)', create_tag)
-            tags_list = [Tag.objects.get_or_create(name=t) for t in tags_regex]
+            tags_list = [Tag.objects.get_or_create(name=t) for t in tag_regex]
             for tag, bool in tags_list:
                 comment.tags.add(tag.pk)
             comment.save()
 
             notification_views.create_notification(
-                created_by, post.created_by, 'comment', post, serializer.data['message']
+                created_by, post.created_by, 'comment', post, serializer.data.get(
+                    'content')
             )
 
             serializer = CommentDetailSerializer(
@@ -137,8 +140,7 @@ class CommentList(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk, format=None):
-        post = Post.objects.filter(pk=pk)
-        comment = Comment.objects.filter(post=post)
+        comment = Comment.objects.filter(post=pk)
 
         if comment is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -154,8 +156,7 @@ class CommentDetail(APIView):
     permission_class = (IsAuthorOrReadOnly, )
 
     def put(self, request, pk, pk2, format=None):
-        post = Post.objects.filter(pk=pk)
-        comment = Comment.objects.get(post=post, pk=pk2)
+        comment = Comment.objects.get(post=pk, pk=pk2)
         is_updated = True
 
         if comment is None:
@@ -171,8 +172,7 @@ class CommentDetail(APIView):
             return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk, pk2, format=None):
-        post = Post.objects.filter(pk=pk)
-        comment = Comment.objects.get(post=post, pk=pk2)
+        comment = Comment.objects.get(post=pk, pk=pk2)
 
         if comment is None:
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -188,8 +188,9 @@ class ClapseList(APIView):
     def get(self, request, pk, format=None):
         clapse = Clapse.objects.filter(post__pk=pk)
         clapse_created_by_ids = clapse.values('created_by')
+        print(clapse_created_by_ids)
         created_by = user_models.objects.filter(
-            username__in=clapse_created_by_ids)
+            pk__in=clapse_created_by_ids)
         serializer = user_serializers.UserSerializer(
             created_by, many=True, context={'request': request}
         )
@@ -252,18 +253,19 @@ class TagPostList(APIView):
     def get(self, request, tagname, format=None):
 
         try:
-            tag = Tag.objects.filter(name=tagname)
-        except:
+            tag = Tag.objects.get(name=tagname)
+        except Exception as e:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            post = Post.objects.filter(tag__in=tag)
+            post = Post.objects.filter(tags=tag)
             serializer = PostListSerializer(
                 post, many=True, context={'request': request}
             )
             return Response(serializer.data, status=status.HTTP_200_OK)
 
-        except:
+        except Exception as e:
+            print(e)
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 
@@ -274,12 +276,12 @@ class TagCommentList(APIView):
     def get(self, request, tagname, format=None):
 
         try:
-            tag = Tag.objects.filter(name=tagname)
+            tag = Tag.objects.get(name=tagname)
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         try:
-            comment = Comment.objects.filter(tag__in=tag)
+            comment = Comment.objects.filter(tags=tag)
             serializer = CommentListSerializer(
                 comment, many=True, context={'request': request}
             )

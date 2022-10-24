@@ -19,5 +19,22 @@ class NotificationList(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
-def create_notification(notify_from, notify_to, follow_type):
-    pass
+def create_notification(notify_from, notify_to, notification_type, post=None, comment=None):
+    notification = models.Notification.objects.create(
+        notify_from=notify_from,
+        notify_to=notify_to,
+        notification_type=notification_type,
+        post=post,
+        comment=comment
+    )
+    notification.save()
+
+    action = ''
+    if notification_type == 'clapse':
+        action = 'clapsed your post'
+    elif notification_type == 'comment':
+        action = 'commented on your post'
+    elif notification_type == 'follow':
+        action = 'followed you'
+
+    url = "v1/"
