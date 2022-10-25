@@ -42,12 +42,15 @@ INSTALLED_APPS = [
     'user',
     'rest_framework',
     'rest_framework.authtoken',
-    'taggit',
+    'debug_toolbar',
 ]
 
 TAGGIT_CASE_INSENSITIVE = True
 TAGGIT_LIMIT = 50
 
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
@@ -69,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'blog_project.urls'
