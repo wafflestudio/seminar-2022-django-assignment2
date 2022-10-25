@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'posts.apps.PostsConfig',
     'tags.apps.TagsConfig',
-    'admins.apps.AdminsConfig',
     'comments.apps.CommentsConfig',
     'users.apps.UsersConfig',
 ]
@@ -92,9 +91,8 @@ WSGI_APPLICATION = 'Project1.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-DATABASES = {
-    MY_DATABASES
-}
+DATABASES = MY_DATABASES
+
 
 
 # Password validation
@@ -121,7 +119,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Seoul'
 
 USE_I18N = True
 
