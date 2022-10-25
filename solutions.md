@@ -14,6 +14,10 @@
 - v1/user/register/
 ```json
 {
+	"username":"username",
+	"password":"password"
+}
+{
 	"username":"username1",
 	"password":"password1",
 	"nickname":"nickname1",
@@ -28,7 +32,7 @@
 	"url":"https://tomatolife.tistory.com/"
 }
 ```
-
+//http://127.0.0.1:8000/v1/post/11/
 - v1/user/login/
 ```json
 {
@@ -92,3 +96,6 @@
   - class Comment
     - tags
   - class Tag
+
+https://www.youtube.com/watch?v=sthCUcw5Zog
+

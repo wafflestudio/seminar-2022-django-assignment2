@@ -1,17 +1,55 @@
 # Medium alternative : Large Scale Blog Service
 ![logo_new](https://user-images.githubusercontent.com/81140673/196366827-142b7ced-6cf0-426b-b72c-a1f7b68e7b60.png)
-- 작성자 : 박용주 (2022.10.13)
+- 작성자 : 박용주 (2022.10.24)
 
 
+<br></br>
+
+# Table of content
+- [Medium alternative : Large Scale Blog Service](#medium-alternative--large-scale-blog-service)
+- [Table of content](#table-of-content)
+- [Overview](#overview)
+- [User App](#user-app)
+  - [Models](#models)
+  - [Urls](#urls)
+  - [Views](#views)
+- [Post App](#post-app)
+  - [Models](#models-1)
+    - [Post model](#post-model)
+    - [Comment model](#comment-model)
+    - [Clapse model](#clapse-model)
+    - [Tag model](#tag-model)
+  - [Urls](#urls-1)
+  - [Views](#views-1)
+- [Notification App](#notification-app)
+  - [Models](#models-2)
+  - [Urls](#urls-2)
+  - [Views](#views-2)
+  - [environment](#environment)
 <br></br>
 
 # Overview
 ![new명세](https://user-images.githubusercontent.com/81140673/196373512-fc2c68a4-f84e-4c1c-aa44-d33604727ec6.png)
+- Medium alternative은 User, Post, Notification 앱으로 구성된 장고 프로젝트입니다. 
+
+
+- User 앱에는 회원가입, 로그인, 마이페이지 기능, 
+
+
+- Post 앱에는 Post, Comment(대댓글), Clapse, Clapse, Tag 기능이 있으며, 
+
+
+- Notification 앱에는 알림 기능을 구현하였습니다. 
+
 
 <br></br>
 
 # User App
+- User 앱은 로그인, 회원가입, 프로파일 등 User 관련 기능을 관리합니다. 
+
 ## Models
+- User model은 다음과 같습니다. 
+  
 |Fields|Type|
 |-|-|
 |username|CharField|
@@ -28,6 +66,9 @@
 <br></br>
 
 ## Urls
+- User 앱의 url 설계는 다음과 같습니다. 
+
+
 |기능|url|viewset|Authentication|
 |-|-|-|-|
 |회원가입|register/|Register| - |
@@ -39,6 +80,8 @@
 <br></br>
 
 ## Views
+- User 앱의 view는 다음과 같습니다. 
+
 |class|method|기능|Authentication|
 |-|-|-|-|
 |RegisterUser|Post|회원가입|X|
@@ -50,10 +93,19 @@
 <br></br>
 
 # Post App
+- Post 앱은 Post, Comment, Clapse, Tag 기능을 담당합니다. 
+  - Post : 블로그 포스트 CRUD
+  - Comment : 댓글 CRUD
+  - Clapse : Medium alternative의 좋아요 기능을 합니다
+  - Tag : Post와 Comment의 Hash Tag를 저장합니다
+
 <br></br>
 
 ## Models
 ### Post model
+- Post 앱의 Post model은 다음과 같습니다. 
+
+
 |Field|Type|
 |-|-|
 |created_by|ForeignKey(User)|
@@ -69,6 +121,9 @@
 |comment_count|self.comment.all().count()|
 
 ### Comment model
+- Post 앱의 Comment model은 다음과 같습니다. 
+
+
 |Field|Type|
 |-|-|
 |post|ForeignKey(Post)|
@@ -83,6 +138,9 @@
 
 
 ### Clapse model
+- Post 앱의 Clapse model은 다음과 같습니다. 
+
+
 |Field|Type|
 |-|-|
 |post|ForeignKey(Post)|
@@ -92,6 +150,9 @@
 
 
 ### Tag model
+- Post 앱의 Tag model은 다음과 같습니다. 
+
+
 |Field|Type|
 |-|-|
 |name|CharField|
@@ -101,6 +162,10 @@
 <br></br>
 
 ## Urls
+- Post 앱의 URL은 다음과 같습니다. 
+
+
+
 |url|viewset|authentication|
 |-|-|-|
 |''|PostList|O|
@@ -115,6 +180,9 @@
 <br></br>
 
 ## Views
+- Post 앱의 View는 다음과 같습니다. 
+
+
 |Class|Method|Authentication|
 |-|-|-|
 |PostList|Get|X|
@@ -135,9 +203,12 @@
 <br></br>
 
 # Notification App
+- Notification 앱은 사용자에게 알림을 보내는 기능을 합니다. 
 <br></br>
 
 ## Models
+- Notification 모델은 다음과 같습니다. 
+
 |Field|Type|
 |-|-|
 |notify_from|ForeignKey(User)|
@@ -150,6 +221,9 @@
 <br></br>
 
 ## Urls
+- Notification URL은 다음과 같습니다. 
+
+
 |url|viewset|authentication|
 |-|-|-|
 |''|NotificationList|O|
@@ -157,6 +231,9 @@
 <br></br>
 
 ## Views
+- Notification View는 다음과 같습니다. 
+
+
 |Class|Method|Authentication|
 |-|-|-|
 |NotificationList|Get|O|
@@ -165,4 +242,4 @@
 
 ## environment
 - Windows wsl
-- requirements.txt
+- [requirements.txt](/requirements.txt)
