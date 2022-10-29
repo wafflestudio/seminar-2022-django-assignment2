@@ -1,7 +1,9 @@
 from django.urls import path
-from .views import RegisterView, LoginView
+from .views import RegisterView, LoginView, PostListCreateView, PostRetrieveUpdateDestroyView
 
 urlpatterns = [
-    path('register/', RegisterView.as_view()),
+    path('signin/', RegisterView.as_view()),
     path('login/', LoginView.as_view()),
+    path('posts/', PostListCreateView.as_view()),
+    path('posts/<int:pk>/', PostRetrieveUpdateDestroyView.as_view()),
 ]

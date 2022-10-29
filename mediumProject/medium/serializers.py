@@ -7,6 +7,8 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework.authtoken.models import Token
 
+from medium.models import Post
+
 
 class RegisterSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(
@@ -47,7 +49,7 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-class LoginSerializer(serializers.Serializer, ABC):
+class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True, write_only=True)
 
@@ -59,3 +61,34 @@ class LoginSerializer(serializers.Serializer, ABC):
         raise serializers.ValidationError(
             {"error": "Unable to log in. Please check the username or password."}
         )
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email']
+
+
+class PostListSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
+
+    def to_internal_value(self, data):
+        internal_value = super().to_internal_value()
+        return {**internal_value, 'created_by': self.context['request'].user}
+
+    class Meta:
+        model = Post
+        fields = ['title', 'id', 'created_by', 'created_at', 'updated_at', 'description', 'image']
+
+
+class PostDetailSerializer(serializers.ModelSerializer):
+    id = serializers.PrimaryKeyRelatedField(read_only=True)
+    created_by = UserSerializer(read_only=True)
+
+    def to_internal_value(self, data):
+        internal_value = super().to_internal_value()
+        return {**internal_value, 'created_by': self.context['request'].user}
+
+    class Meta:
+        model = Post
+        fields = ['title', 'id', 'created_by', 'created_at', 'updated_at', 'description', 'image']
