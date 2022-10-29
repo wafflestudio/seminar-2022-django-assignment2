@@ -1,35 +1,20 @@
-from django.contrib.auth.models import User
-from rest_framework import generics, status
-from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 
 from .models import Post
-from .permissions import IsUserOrReadOnly, IsAuthorOrReadOnly
-from .serializers import RegisterSerializer, LoginSerializer, PostListSerializer, PostDetailSerializer
-
-
-class RegisterView(generics.CreateAPIView):
-    queryset = User.objects.all()
-    serializer_class = RegisterSerializer
-
-
-class LoginView(generics.GenericAPIView):
-    serializer_class = LoginSerializer
-
-    def post(self, request):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        token = serializer.validated_data
-        return Response({"token": token.key}, status=status.HTTP_200_OK)
+from .permissions import IsAuthorOrReadOnly
+from .serializers import PostListSerializer, PostDetailSerializer
 
 
 class PostListCreateView(generics.ListCreateAPIView):
     queryset = Post.objects.all()
-    permission_classes = [IsUserOrReadOnly]
+    permission_classes = [IsAuthenticatedOrReadOnly]
     serializer_class = PostListSerializer
+
 
 class PostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
-    permission_classes = [IsAuthorOrReadOnly]
+    permission_classes = [IsAuthorOrReadOnly|IsAdminUser]
 
     def get_serializer_class(self):
         if self.request.method == 'GET':

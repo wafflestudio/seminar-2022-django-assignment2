@@ -8,4 +8,4 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=128)
     description = models.TextField()
-    image = models.ImageField(upload_to='post/', default='default.jpg')
+    image = models.ImageField(upload_to='posts/', default='default.jpg')
