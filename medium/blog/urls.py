@@ -1,6 +1,6 @@
-from blog import views as blog_views
 from django import urls
-from rest_framework import routers
+
+from blog import views as blog_views
 
 urlpatterns = [
     urls.path("post/", blog_views.PostListCreateView.as_view()),
@@ -10,4 +10,6 @@ urlpatterns = [
         "post/<int:pid>/comment/<int:cid>/",
         blog_views.CommentUpdateDestroyView.as_view(),
     ),
+    urls.path("tag/post/", blog_views.TagToPostListView.as_view()),
+    urls.path("tag/comment/", blog_views.TagToCommentListView.as_view()),
 ]

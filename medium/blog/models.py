@@ -1,5 +1,3 @@
-from email.policy import default
-
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -17,7 +15,6 @@ class Post(models.Model):
         verbose_name = "post"
         verbose_name_plural = "posts"
         db_table = "posts"
-        ordering = ("-created_at",)
 
     def __str__(self):
         return self.title
@@ -38,4 +35,21 @@ class Comment(models.Model):
         verbose_name = "comment"
         verbose_name_plural = "comments"
         db_table = "comments"
-        ordering = ("-created_at",)
+
+
+class Tag(models.Model):
+    name = models.CharField(primary_key=True, max_length=30)
+
+
+class TagToPost(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class TagToComment(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

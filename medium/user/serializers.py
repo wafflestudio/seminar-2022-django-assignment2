@@ -2,7 +2,8 @@ from typing import Dict
 
 from django.contrib.auth import password_validation
 from django.contrib.auth.models import User
-from rest_framework import serializers, validators
+from rest_framework import serializers
+from rest_framework import validators
 
 
 class RegisterSerializer(serializers.ModelSerializer):

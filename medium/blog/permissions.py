@@ -1,5 +1,7 @@
+from rest_framework import permissions
+from rest_framework import request
+
 from blog import models as blog_models
-from rest_framework import permissions, request
 
 
 class IsPostCreator(permissions.IsAuthenticatedOrReadOnly):
