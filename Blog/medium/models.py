@@ -6,7 +6,6 @@ from django.contrib.auth.hashers import make_password, is_password_usable
 from django.contrib.auth.models import User
 
 from rest_framework.authtoken.models import Token
-# Create your models here.
 
 
 class User(User):
@@ -42,8 +41,6 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-# docker run --name postgres -e POSTGRES_USER=jaeyeong -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
-
 
 class Comment(models.Model):
     post_id = models.ForeignKey(Post,
@@ -52,7 +49,6 @@ class Comment(models.Model):
                                 db_column='post_id',
                                 default=None)
     created_at = models.DateTimeField(auto_now=True)
-    # created_by = models.CharField(max_length=100, blank=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, default=None, on_delete=models.PROTECT)
     updated_at = models.DateTimeField(auto_now_add=True)
     is_updated = models.BooleanField(default=False)
@@ -67,6 +63,4 @@ class Comment(models.Model):
 class TagToPostComment(models.Model):
     post = models.ForeignKey(Post, on_delete=models.CASCADE, null=True)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
-# class TagToComment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, null=True)
-    # tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
