@@ -1,5 +1,5 @@
 from django.db import models
-from django.db.models.signals import post_delete, pre_delete
+from django.db.models.signals import post_delete
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
@@ -16,10 +16,11 @@ def delete_post_tag(sender, instance, **kwargs):
     if tag.post_set.all().count() == 0:
         tag.delete()
 
+
 @receiver(post_delete, sender='blog.Comment')
 def delete_comment_tag(sender, instance, **kwargs):
     tag_id = instance.tag_id
-    if CommentTag.objects.filter(content=tag_id).count() ==0:
+    if CommentTag.objects.filter(content=tag_id).count() == 0:
         return
     tag = instance.tag
     if tag.comment_set.all().count() == 0:
@@ -37,7 +38,7 @@ class MyUser(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.email.split("@")[0]+"/"+self.last_name
+        return self.email.split("@")[0] + "/" + self.last_name
 
 
 def get_sentinel_user():

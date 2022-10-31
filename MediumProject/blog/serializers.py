@@ -5,7 +5,6 @@ from MediumProject import settings
 
 
 class UserSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = get_user_model()
         fields = ['id', 'first_name', 'last_name']
@@ -14,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
-        fields = ['email', 'password','first_name', 'last_name']
+        fields = ['email', 'password', 'first_name', 'last_name']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
@@ -59,7 +58,7 @@ class PostListSerializer(serializers.ModelSerializer):
             validated_data['tag'] = PostTag.objects.get_or_create(content="none")[0]
         else:
             validated_data['tag'] = PostTag.objects.get_or_create(content=validated_data['tag'])[0]
-        validated_data['created_by']=self.context['request'].user
+        validated_data['created_by'] = self.context['request'].user
         instance = super().create(validated_data)
         return instance
 
@@ -99,7 +98,7 @@ class CommentListSerializer(serializers.ModelSerializer):
         if validated_data['tag'] == '':
             validated_data['tag'] = CommentTag.objects.get_or_create(content="none")[0]
         else:
-            validated_data['tag'] = CommentTag.objects.get_or_create(content = validated_data['tag'])[0]
+            validated_data['tag'] = CommentTag.objects.get_or_create(content=validated_data['tag'])[0]
         validated_data['post'] = Post.objects.get(id=self.context['view'].kwargs['pk'])
         validated_data['created_by'] = self.context['request'].user
         instance = super().create(validated_data)
@@ -109,4 +108,3 @@ class CommentListSerializer(serializers.ModelSerializer):
         model = Comment
         fields = ['id', 'created_by', 'content', 'tag', 'created', 'is_updated']
         read_only_fields = ['id', 'created_by', 'is_updated']
-

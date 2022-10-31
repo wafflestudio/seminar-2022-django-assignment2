@@ -1,5 +1,5 @@
 from knox.models import AuthToken
-from rest_framework import generics, mixins
+from rest_framework import generics
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
 from rest_framework.pagination import CursorPagination
@@ -89,16 +89,16 @@ class CommentRetrieveUpdateDestroyView(generics.UpdateAPIView, generics.DestroyA
         return obj
 
     def check_object_permissions(self, request, obj):
-        super().check_object_permissions(request,obj)
+        super().check_object_permissions(request, obj)
 
     def permission_denied(self, request, message=None, code=None):
         raise PermissionDenied(message)
 
     def put(self, request, *args, **kwargs):
-        return self.update(request,*args,**kwargs)
+        return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-        return self.partial_update(request, *args,**kwargs)
+        return self.partial_update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         return self.destroy(request, *args, **kwargs)
@@ -118,5 +118,3 @@ class TaggedCommentListView(generics.ListAPIView):
     def get_queryset(self):
         tag = CommentTag.objects.get(pk=self.kwargs['pk'])
         return Comment.objects.filter(tag=tag)
-
-
