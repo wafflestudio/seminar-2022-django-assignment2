@@ -4,6 +4,7 @@ from rest_framework import views
 from .permissions import IsAuthorOrReadOnly
 from .serializers import *
 from django.shortcuts import get_object_or_404
+from .models import *
 
 
 class PostListView(generics.ListCreateAPIView):
@@ -70,6 +71,13 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         post = self.get_object()
+        tags = Tag.objects.filter(tag_post=post)
+        for tag in tags:
+            comment_tags = Comment.objects.filter(tag=tag)
+            post_tags = Post.objects.filter(tag=tag)
+            if (len(comment_tags) + len(post_tags)) == 1:
+                tag_a = Tag.objects.get(pk=tag.pk)
+                tag_a.delete()
         post.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -150,6 +158,13 @@ class CommentUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         comment = self.get_object()
+        tags = Tag.objects.filter(tag_comment=comment)
+        for tag in tags:
+            comment_tags = Comment.objects.filter(tag=tag)
+            post_tags = Post.objects.filter(tag=tag)
+            if (len(comment_tags) + len(post_tags)) == 1:
+                tag_a = Tag.objects.get(pk=tag.pk)
+                tag_a.delete()
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -158,7 +173,7 @@ class TagPostListView(views.APIView):
 
     def get(self, request, tag_name):
         post = Post.objects.filter(tag__tag_name=tag_name)
-        if post is None:
+        if len(post) == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = PostListSerializer(post, many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -168,10 +183,11 @@ class TagCommentListView(views.APIView):
 
     def get(self, request, tag_name):
         comment = Comment.objects.filter(tag__tag_name=tag_name)
-        if comment is None:
+        if len(comment) == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = CommentSerializer(comment, many=True, context={'request': request})
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
 
 class TagListView(generics.ListAPIView):
     queryset = Tag.objects.all()
