@@ -3,7 +3,7 @@
 - 참고한 사이트는 [medium.com](https://medium.com/)입니다.
 
 
-# User
+## User
 - User url 구성은 다음과 같습니다.
 - 기본적으로 localhost:8000/user/ 뒤에서 시작합니다.
 
@@ -29,7 +29,7 @@
 - IsAuthenticated만 가능
 
 
-# Blog
+## Blog
 - Blog url 구성은 다음과 같습니다.
 - 기본적으로 localhost:8000/blog/ 뒤에서 시작합니다.
 
