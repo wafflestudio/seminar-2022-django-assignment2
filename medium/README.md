@@ -3,6 +3,7 @@
 - 참고한 사이트는 [medium.com](https://medium.com/)입니다.
 
 
+
 # User
 - User url 구성은 다음과 같습니다.
 - 기본적으로 localhost:8000/user/ 뒤에서 시작합니다.
@@ -29,9 +30,11 @@
 - IsAuthenticated만 가능
 
 
+
 # Blog
 - Blog url 구성은 다음과 같습니다.
 - 기본적으로 localhost:8000/blog/ 뒤에서 시작합니다.
+
 
 ## POST
 - 아래는 POST에 해당하는 기능들입니다.
@@ -72,6 +75,7 @@
 ![authorized_delete_post](./pictures/authorized_delete_post.PNG)
 - 해당 POST 삭제
 - 작성자만 삭제가능
+- TAG가 해당 POST에만 해당되었다면 TAG도 같이 삭제
 ####
 ![unauthorized_delete_post](./pictures/authorized_delete_post.PNG)
 ![otheruser_delete_post](./pictures/otheruser_delete_post.PNG)
@@ -118,6 +122,7 @@
 ![delete_comment](./pictures/delete_comment.PNG)
 - 해당 COMMENT 삭제
 - 작성자만 삭제가능
+- TAG가 해당 COMMENT에만 해당되었다면 TAG도 같이 삭제
 
 
 ## TAG
