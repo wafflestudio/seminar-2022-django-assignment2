@@ -2,8 +2,7 @@
 - Blog App의 간략한 동작을 Insomnia를 통해 확인해보았습니다.
 - 참고한 사이트는 [medium.com](https://medium.com/)입니다.
 
-
-
+<br></br>
 # User
 - User url 구성은 다음과 같습니다.
 - 기본적으로 localhost:8000/user/ 뒤에서 시작합니다.
@@ -29,13 +28,12 @@
 - 해당 유저 프로필 보여주기
 - IsAuthenticated만 가능
 
-
-
+<br></br>
 # Blog
 - Blog url 구성은 다음과 같습니다.
 - 기본적으로 localhost:8000/blog/ 뒤에서 시작합니다.
 
-
+<br></br>
 ## POST
 - 아래는 POST에 해당하는 기능들입니다.
 
@@ -85,7 +83,7 @@
 ![admin_delete_post](./pictures/admin_delete_post.PNG)
 - 어드민은 삭제 가능
 
-
+<br></br>
 ## COMMENT
 - 아래는 COMMENT에 해당하는 기능들입니다.
 
@@ -124,7 +122,7 @@
 - 작성자만 삭제가능
 - TAG가 해당 COMMENT에만 해당되었다면 TAG도 같이 삭제
 
-
+<br></br>
 ## TAG
 - 아래는 TAG에 해당하는 기능들입니다.
 - POST와 COMMENT는 여러개의 TAG를 가질 수 있습니다.
