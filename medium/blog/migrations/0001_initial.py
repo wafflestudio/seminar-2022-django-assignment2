@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('like_count', models.IntegerField(default=0)),
             ],
             options={
-                'ordering': ['created_at'],
+                'ordering': ['-created_at'],
             },
         ),
         migrations.CreateModel(

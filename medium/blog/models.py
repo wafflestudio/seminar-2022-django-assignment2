@@ -28,7 +28,7 @@ class Comment(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    content = models.TextField()
+    content = models.TextField(max_length=200)
     is_updated = models.BooleanField(default=False)
     is_activated = models.BooleanField(default=True)
     like_count = models.IntegerField(default=0)
