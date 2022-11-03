@@ -75,7 +75,7 @@
 - 작성자만 삭제가능
 - TAG가 해당 POST에만 해당되었다면 TAG도 같이 삭제
 ####
-![unauthorized_delete_post](./pictures/authorized_delete_post.PNG)
+![unauthorized_delete_post](./pictures/unauthorized_delete_post.PNG)
 ![otheruser_delete_post](./pictures/otheruser_delete_post.PNG)
 - 로그인 안하고 삭제 시도시 에러
 - 다른 유저가 삭제 시도시 에러
