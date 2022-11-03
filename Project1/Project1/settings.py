@@ -53,7 +53,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    'EXCEPTION_HANDLER': 'Project1.utils.custom_exception_handler'
 }
 
 MIDDLEWARE = [

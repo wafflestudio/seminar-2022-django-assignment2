@@ -6,7 +6,7 @@ from .models import Post
 class IsCreatorOrReadOnly(permissions.BasePermission):
     message = "Because current account is not writer, you don't have permission."
 
-    def has_permission(self, request, view, obj: Post):
+    def has_object_permission(self, request, view, obj: Post):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:

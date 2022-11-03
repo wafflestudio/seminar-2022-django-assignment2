@@ -1,10 +1,10 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from .views import CommentListView, CommentCreateView, CommentUpdateDestoryView
+from .views import CommentListCreateView, CommentUpdateDestroyView
 
 urlpatterns = [
-    path('comments/list', CommentListView.as_view()),
-    path('comments/<int:pk>', CommentUpdateDestoryView),
+    path('list/', CommentListCreateView.as_view()),
+    path('<int:comment_id>/', CommentUpdateDestroyView.as_view()),
 ]
 
-urlpatterns = format_suffix_patterns(urlpatterns)
+# urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])

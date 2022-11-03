@@ -7,5 +7,5 @@ from .models import Comment
 class IsWriter(permissions.BasePermission):
     message = "You're not writer of this comment."
 
-    def has_permission(self, request, view, obj: Comment):
-        return obj.created_by == request.user
+    def has_object_permission(self, request, view, obj: Comment):
+        return obj.written_by == request.user or request.user.is_superuser

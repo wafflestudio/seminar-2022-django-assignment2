@@ -1,28 +1,51 @@
 from django.shortcuts import render
 
 from rest_framework import generics, mixins
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.pagination import CursorPagination
+from rest_framework.exceptions import NotFound, PermissionDenied
 
-from models import Comment
-from serializers import CommentSerializer
-from permissions import IsWriter
+from .models import Comment
+from .serializers import CommentListCreateSerializer, CommentUpdateDestroySerializer
+from .permissions import IsWriter
 # Create your views here.
-class CommentListView(generics.ListAPIView):
+class StandardCursorPagination(CursorPagination):
+    page_size = 5
+    cursor_query_param = 'id'
+    ordering = '-created_at'
+class CommentListCreateView(generics.ListCreateAPIView):
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    serializer_class = CommentListCreateSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = StandardCursorPagination
 
-    def get_exception_handler(self):
-class CommentCreateView(generics.CreateAPIView):
-    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        try:
+            comment_list = Comment.objects.filter(post__id=self.kwargs['post_id'])
+            self.check_object_permissions(self.request, comment_list)
+        except:
+            raise NotFound("There is no post.")
+        return comment_list
+
+class CommentUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [IsWriter]
     queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    serializer_class = CommentUpdateDestroySerializer
+    lookup_field = 'id'
+    lookup_url_kwarg = 'comment_id'
 
-    def get_exception_handler(self):
-class CommentUpdateDestoryView(generics.GenericAPIView,
-                               mixins.UpdateModelMixin,
-                               mixins.DestroyModelMixin):
-    permission_classes = [IsWriter | IsAdminUser]
-    queryset = Comment.objects.all()
-    serializer_class = CommentSerializer
+    def get_queryset(self):
+        comment_id = self.kwargs['comment_id']
+        comments = Comment.objects.all()
+        comment = comments.filter(id=comment_id)
+        if len(comment) == 0:
+            raise NotFound("There is no comment like that.")
+        try:
+            self.check_object_permissions(self.request, comment[0])
+        except:
+            raise PermissionDenied("You're not writer of this comment.")
 
-    def get_exception_handler(self):
+        return comment
+
+
+
