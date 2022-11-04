@@ -1,7 +1,9 @@
 from django.http import Http404
 from rest_framework import generics, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
+from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser, IsAuthenticated
 from rest_framework.views import APIView
 
 from .models import Post, Comment, Tag, TagToPost, TagToComment
@@ -100,3 +102,27 @@ class TagToCommentView(generics.ListAPIView):
     def get_queryset(self):
         tag = self.kwargs['tag_content']
         return Comment.objects.filter(tag=tag)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def like_post(request, post_id):
+    post = get_object_or_404(Post, post_id=post_id)
+    if request.user in post.likes.all():
+        post.likes.remove(request.user)
+    else:
+        post.likes.add(request.user)
+
+    return Response(status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def like_comment(request, comment_id):
+    comment = get_object_or_404(Comment, comment_id=comment_id)
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+
+    return Response(status=status.HTTP_200_OK)

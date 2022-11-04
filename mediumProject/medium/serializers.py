@@ -51,10 +51,15 @@ class PostListSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(serializers.ModelSerializer):
     post_id = serializers.PrimaryKeyRelatedField(read_only=True)
     created_by = UserSerializer(read_only=True)
+    likes = serializers.SerializerMethodField()
+
+    def get_likes(self, obj):
+        return len(obj.likes.all())
 
     def to_internal_value(self, data):
         internal_value = super().to_internal_value(data)
-        return {**internal_value, 'created_by': self.context['request'].user}
+        return {**internal_value,
+                'created_by': self.context['request'].user}
 
     class Meta:
         model = Post
@@ -66,13 +71,19 @@ class PostDetailSerializer(serializers.ModelSerializer):
             'updated_at',
             'description',
             'image',
-            'tag']
+            'tag',
+            'likes'
+        ]
 
 
 class CommentSerializer(serializers.ModelSerializer):
     comment_id = serializers.PrimaryKeyRelatedField(read_only=True)
     created_by = UserSerializer(read_only=True)
     tag = TagSerializer(many=True, required=False)
+    likes = serializers.SerializerMethodField()
+
+    def get_likes(self, obj):
+        return len(obj.likes.all())
 
     def create(self, validated_data):
         tag_list = validated_data.pop('tag', [])
@@ -98,5 +109,7 @@ class CommentSerializer(serializers.ModelSerializer):
             'updated_at',
             'content',
             'is_updated',
-            'tag']
+            'tag',
+            'likes'
+        ]
 
