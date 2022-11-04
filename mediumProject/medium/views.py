@@ -1,11 +1,10 @@
 from django.http import Http404
 from rest_framework import generics, status
 from rest_framework.response import Response
-from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.views import APIView
 
-from .models import Post, Comment
+from .models import Post, Comment, Tag, TagToPost, TagToComment
 from .pagination import CustomCursorPagination
 from .permissions import IsCreatorOrReadOnly
 from .serializers import PostListSerializer, PostDetailSerializer, CommentSerializer
@@ -20,13 +19,25 @@ class PostListCreateView(generics.ListCreateAPIView):
 
 class PostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
-    permission_classes = [IsCreatorOrReadOnly|IsAdminUser]
+    permission_classes = [IsCreatorOrReadOnly | IsAdminUser]
     lookup_field = 'post_id'
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
             return PostDetailSerializer
         return PostListSerializer
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        tags = Tag.objects.filter(post=instance.post_id)
+        for tag in tags:
+            tag_in_post = TagToPost.objects.filter(tag=tag)
+            tag_in_comment = TagToComment.objects.filter(tag=tag)
+            if len(tag_in_post) + len(tag_in_comment) <= 1:
+                tag_in_tag = Tag.objects.get(content=tag.content)
+                tag_in_tag.delete()
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class CommentListCreateView(generics.ListCreateAPIView):
@@ -40,7 +51,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
 
 class CommentUpdateDestroyView(APIView):
-    permission_classes = [IsCreatorOrReadOnly|IsAdminUser]
+    permission_classes = [IsCreatorOrReadOnly | IsAdminUser]
 
     def get_object(self):
         cid = self.kwargs.get('comment_id')
@@ -62,5 +73,30 @@ class CommentUpdateDestroyView(APIView):
 
     def delete(self, request, post_id, comment_id):
         comment = self.get_object()
+        tags = Tag.objects.filter(comment=comment)
+        for tag in tags:
+            tag_in_post = TagToPost.objects.filter(tag=tag)
+            tag_in_comment = TagToComment.objects.filter(tag=tag)
+            if len(tag_in_post)+len(tag_in_comment) <= 1:
+                tag_in_tag = Tag.objects.get(content=tag.content)
+                tag_in_tag.delete()
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class TagToPostView(generics.ListAPIView):
+    serializer_class = PostListSerializer
+    pagination_class = CustomCursorPagination
+
+    def get_queryset(self):
+        tag = self.kwargs['tag_content']
+        return Post.objects.filter(tag=tag)
+
+
+class TagToCommentView(generics.ListAPIView):
+    serializer_class = CommentSerializer
+    pagination_class = CustomCursorPagination
+
+    def get_queryset(self):
+        tag = self.kwargs['tag_content']
+        return Comment.objects.filter(tag=tag)

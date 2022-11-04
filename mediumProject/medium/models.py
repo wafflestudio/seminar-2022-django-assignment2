@@ -10,6 +10,7 @@ class Post(models.Model):
     title = models.CharField(max_length=128)
     description = models.TextField()
     image = models.ImageField(upload_to='post/', default='default.jpg')
+    tag = models.ManyToManyField('Tag', through='TagToPost')
 
 
 class Comment(models.Model):
@@ -20,6 +21,24 @@ class Comment(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     content = models.TextField()
     is_updated = models.BooleanField(default=False)
+    tag = models.ManyToManyField('Tag', through='TagToComment')
+
+
+class Tag(models.Model):
+    content = models.CharField(max_length=50, primary_key=True, blank=True)
+
+
+class TagToPost(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class TagToComment(models.Model):
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 
 
 
