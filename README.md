@@ -3,7 +3,7 @@
 /medium/posts  
 Post create, list  
   
-/medium/posts/<int:pk> 
+/medium/posts/<int:pk>  
 Post detail, update, delete  
   
 /medium/posts/<int:pk>/comments  
