@@ -47,5 +47,38 @@ class CommentUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
         return comment
 
+class CommentListByTagView(generics.ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentListCreateSerializer
+    lookup_field = 'content'
+    lookup_url_kwarg = 'content'
+
+
+    def get_queryset(self):
+        tag_content = self.kwargs['content']
+        comments = Comment.objects.all()
+        comments = comments.filter(tags__content=tag_content)
+        try:
+            self.check_object_permissions(self.request, comments)
+        except:
+            raise PermissionDenied("You don't have permission of this method.")
+        return comments
+
+class CommentListByTagViewInCurrentPost(generics.ListAPIView):
+    queryset = Comment.objects.all()
+    serializer_class = CommentListCreateSerializer
+    lookup_field = 'content'
+    lookup_url_kwarg = 'content'
+
+
+    def get_queryset(self):
+        tag_content = self.kwargs['content']
+        comments = Comment.objects.all()
+        comments = comments.filter(tags__content=tag_content)
+        try:
+            self.check_object_permissions(self.request, comments)
+        except:
+            raise PermissionDenied("You don't have permission of this method.")
+        return comments
 
 

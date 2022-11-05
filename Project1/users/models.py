@@ -12,7 +12,7 @@ def upload_to(instance, filename):
     return f'images/{filename}'.format(filename=filename)
 
 class User(AbstractUser):
-    profile_photo = models.ImageField(upload_to = upload_to, null=True, blank=True)
+    profile_photo = models.ImageField(upload_to=upload_to, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -8,4 +8,4 @@ class IsWriter(permissions.BasePermission):
     message = "You're not writer of this comment."
 
     def has_object_permission(self, request, view, obj: Comment):
-        return obj.written_by == request.user or request.user.is_superuser
+        return obj[0].written_by == request.user or request.user.is_superuser

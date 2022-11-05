@@ -20,11 +20,15 @@ from django.conf.urls.static import static
 
 from rest_framework import routers
 
+from comments.views import CommentListByTagView
+
 router = routers.SimpleRouter()
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
     path('users/', include('users.urls')),
     path('posts/', include('posts.urls')),
+    path('comments/tag/<str:content>',CommentListByTagView.as_view(), name='comments-by-tag')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

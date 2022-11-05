@@ -89,8 +89,6 @@ class FollowingSerializer(serializers.ModelSerializer):
 
         return representation
 
-    def get_following_num(self, instance):
-        pass
     class Meta:
         model = UserFollowing
         fields = ["id", "following_users", "created_at"]

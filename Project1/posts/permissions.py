@@ -6,7 +6,8 @@ from .models import Post
 class IsCreatorOrReadOnly(permissions.BasePermission):
     message = "Because current account is not writer, you don't have permission."
 
-    def has_object_permission(self, request, view, obj: Post):
+    # retrieve와 update시의 serializer의 obj가 다름 - 하나는 queryset, 하나는 Post
+    def has_object_permission(self, request, view, obj:Post):
         if request.method in permissions.SAFE_METHODS:
             return True
         else:

@@ -26,10 +26,11 @@ class UserCreateView(generics.CreateAPIView):
     def perform_create(self, serializer):
         data = serializer.data
         self.check_object_permissions(self.request, data)
+        queryset = User.objects.filter(user=self.request.user)
+        if queryset.exists():
+            raise ValidationError('You have already signed up.')
+        serializer.save(user=self.request.user)
 
-    page_size = 20
-    cursor_query_param = 'id'
-    ordering = '-created_at'
 class UserListView(generics.ListAPIView):
     serializer_class = UserSerializer
     parser_classes = [MultiPartParser]
@@ -62,7 +63,7 @@ class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
         try:
             self.check_object_permissions(self.request, user)
         except:
-            raise NotFound("username is None or username isn't correct")
+            raise PermissionDenied("You're not account owner.")
         return user
 
     def retrieve(self, request, *args, **kwargs):
