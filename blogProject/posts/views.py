@@ -53,6 +53,9 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
     def get(self, request, *args, **kwargs):
         raise exceptions.MethodNotAllowed("GET")
 
+    def perform_update(self, serializer):
+        serializer.save(is_updated=True)
+
 # class CommentUpdateView(generics.UpdateAPIView):
 #     permission_classes = [IsAuthor]
 #     queryset = Comment.objects.all()
