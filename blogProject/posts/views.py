@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.shortcuts import render
 from rest_framework import generics, request, exceptions
 from rest_framework.authentication import TokenAuthentication
+from rest_framework.pagination import CursorPagination
 from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
 from rest_framework.response import Response
 
@@ -10,9 +11,15 @@ from posts.permissions import IsAuthorOrReadOnly, IsAuthor
 from posts.serializers import PostSerializer, PostSummarySerializer, CommentSerializer
 
 
+class PostCommentPagination(CursorPagination):
+    page_size = 10
+    ordering = '-created_at'
+
+
 class PostListView(generics.ListCreateAPIView):
     # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = PostCommentPagination
     queryset = Post.objects.all()
 
     # serializer_class = PostSerializer
@@ -34,6 +41,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
+    pagination_class = PostCommentPagination
     serializer_class = CommentSerializer
 
     def get_queryset(self):
