@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-dihg(t2weu1j5(#b**_dzb#yy*j!4gn&lnf7p6!(oochs48ee4'
+SECRET_KEY = 'django-insecure--a2ter2+k+sajtf(==qa1ph=v+)d6s9ng)q)ivyl17jhpey2hj'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'rest_framework.authtoken',
+    'MainBlog.apps.MainblogConfig',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +79,15 @@ WSGI_APPLICATION = 'MediumBlog.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'myusername',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',
+        'PORT': 5432,
     }
 }
+
 
 
 # Password validation
@@ -122,3 +130,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+AUTH_USER_MODEL = 'MainBlog.User'
+
