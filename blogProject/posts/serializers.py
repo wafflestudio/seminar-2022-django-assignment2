@@ -26,3 +26,7 @@ class PostSummarySerializer(PostSerializer):
         representation = super().to_representation(instance)
         representation['content'] = representation['content'][:300]
         return representation
+
+    class Meta:
+        model = Post
+        fields = ['author', 'title', 'content', 'created_at', 'updated_at']
