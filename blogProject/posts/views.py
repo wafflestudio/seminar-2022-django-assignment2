@@ -25,10 +25,6 @@ class PostListView(generics.ListCreateAPIView):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    # def get(self, request, *args, **kwargs):
-    #     print(request.user)
-    #     return super().get(self, request, *args, **kwargs)
-
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsAuthorOrReadOnly | IsAdminUser]
@@ -38,11 +34,16 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentListView(generics.ListCreateAPIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
 
+    def get_queryset(self):
+        queryset = Comment.objects.all()
+        post_id = self.kwargs['pk']
+        return queryset.filter(post_id=post_id)
+
     def perform_create(self, serializer):
-        serializer.save(author=self.request.user)
+        post_id = self.kwargs['pk']
+        serializer.save(post_id=post_id, author=self.request.user)
 
 
 class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -54,15 +55,5 @@ class CommentDetailView(generics.RetrieveUpdateDestroyAPIView):
         raise exceptions.MethodNotAllowed("GET")
 
     def perform_update(self, serializer):
-        serializer.save(is_updated=True)
-
-# class CommentUpdateView(generics.UpdateAPIView):
-#     permission_classes = [IsAuthor]
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
-#
-#
-# class CommentDestroyView(generics.DestroyAPIView):
-#     permission_classes = [IsAuthor]
-#     queryset = Comment.objects.all()
-#     serializer_class = CommentSerializer
+        post_id = self.kwargs['ppk']
+        serializer.save(post_id=post_id, is_updated=True)
