@@ -31,11 +31,15 @@ class PostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        tags = Tag.objects.filter(post=instance.post_id)
+        comments = Comment.objects.filter(post=instance.post_id)
+        tags = Tag.objects.filter(post=instance.post_id) | Tag.objects.filter(comment__in=comments.all())
         for tag in tags:
-            tag_in_post = TagToPost.objects.filter(tag=tag)
-            tag_in_comment = TagToComment.objects.filter(tag=tag)
-            if len(tag_in_post) + len(tag_in_comment) <= 1:
+            num_post_with_this_tag_but_not_in_this_post = \
+                TagToPost.objects.filter(tag=tag).exclude(post=instance.post_id).count()
+            num_comment_with_this_tag_but_not_in_related_comments = \
+                TagToComment.objects.filter(tag=tag).exclude(comment__in=comments.all()).count()
+            if num_post_with_this_tag_but_not_in_this_post == 0 \
+                    and num_comment_with_this_tag_but_not_in_related_comments == 0:
                 tag_in_tag = Tag.objects.get(content=tag.content)
                 tag_in_tag.delete()
         self.perform_destroy(instance)
@@ -79,7 +83,7 @@ class CommentUpdateDestroyView(APIView):
         for tag in tags:
             tag_in_post = TagToPost.objects.filter(tag=tag)
             tag_in_comment = TagToComment.objects.filter(tag=tag)
-            if len(tag_in_post)+len(tag_in_comment) <= 1:
+            if len(tag_in_post)+len(tag_in_comment) == 1:
                 tag_in_tag = Tag.objects.get(content=tag.content)
                 tag_in_tag.delete()
         comment.delete()

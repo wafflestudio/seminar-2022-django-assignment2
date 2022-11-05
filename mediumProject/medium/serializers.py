@@ -112,4 +112,3 @@ class CommentSerializer(serializers.ModelSerializer):
             'tag',
             'likes'
         ]
-
