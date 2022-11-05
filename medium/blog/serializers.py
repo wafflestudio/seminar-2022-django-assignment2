@@ -4,28 +4,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.hashers import make_password
 
 
-class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email')
-
-
-class RegisterSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'email', 'password')
-        extra_kwargs = {'password': {'write_only': True}}
-
-    def create(self, validated_data):
-        hashed_password = make_password(validated_data['password'])
-        user = User.objects.create_user(author=validated_data['username'], email=validated_data['email'], password=hashed_password)
-        return user
-
-
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['__all__']
+        fields = ['title', 'author', 'description']
 
     def create(self, validated_data):
         description = validated_data.pop('description')
@@ -37,7 +19,7 @@ class PostSerializer(serializers.ModelSerializer):
 class PostListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['author', 'created', 'title', 'description_preview']
+        fields = ['author', 'created', 'title', 'description_preview', 'comments']
 
 
 class CommentSerializer(serializers.ModelSerializer):
