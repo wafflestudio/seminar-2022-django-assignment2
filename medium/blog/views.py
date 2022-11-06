@@ -34,6 +34,7 @@ class PostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [blog_permissions.IsPostCreator]
     queryset = blog_models.Post.objects.all()
     serializer_class = blog_serializers.PostSerializer
+
     lookup_field = "pid"
 
     def perform_destroy(self, post: blog_models.Post):
@@ -64,10 +65,10 @@ class CommentUpdateDestroyView(
     mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView
 ):
     authentication_classes = [authentication.TokenAuthentication]
-    pagination_class = pagination.CursorPagination
     permission_classes = [blog_permissions.IsCommentCreator]
     queryset = blog_models.Comment.objects.all()
     serializer_class = blog_serializers.CommentSerializer
+
     lookup_field = "cid"
 
     def put(self, request, *args, **kwargs):
