@@ -6,5 +6,4 @@ from accounts import views
 urlpatterns = [
     path('signup/', views.SignUpView.as_view()),
     path('login/', views.LogInView.as_view()),
-    # path('api-auth/', include('rest_framework.urls')),
 ]

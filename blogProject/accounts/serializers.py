@@ -1,11 +1,12 @@
-from django.contrib.auth import authenticate
+from django.contrib import auth
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 
 from accounts.models import User
 
 
 class SignUpSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(max_length=20, min_length=8, write_only=True)
+    password = serializers.CharField(max_length=30, min_length=8, write_only=True)
 
     class Meta:
         model = User
@@ -21,12 +22,32 @@ class SignUpSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 
-class LogInSerializer(serializers.Serializer):
+class LogInSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
     username = serializers.CharField()
-    password = serializers.CharField()
+    tokens = serializers.SerializerMethodField()
 
-    def validate(self, data):
-        user = authenticate(**data)
-        if user and user.is_active:
-            return user
-        raise serializers.ValidationError("Unable to log in with provided credentials.")
+    def get_tokens(self, obj):
+        user = User.objects.get(username=obj['username'])
+        return {
+            'token': user.tokens()['token']
+        }
+
+    class Meta:
+        model = User
+        fields = ['password', 'username', 'tokens', ]
+
+    def validate(self, attrs):
+        username = attrs.get('username', '')
+        password = attrs.get('password', '')
+        user = auth.authenticate(username=username, password=password)
+
+        if not user:
+            raise AuthenticationFailed('invalid credentials, try again')
+        if not user.is_active:
+            raise AuthenticationFailed('user not active')
+
+        return {
+            'username': user.username,
+            'tokens': user.tokens
+        }
