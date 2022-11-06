@@ -3,7 +3,7 @@ from .models import Post, Clapse, Comment, Tag
 
 
 class PostPagination(CursorPagination):
-    page_size = 30
+    page_size = 5
     ordering = '-created_at'
 
 

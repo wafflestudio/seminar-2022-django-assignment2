@@ -13,6 +13,7 @@
   - [Models](#models)
   - [Urls](#urls)
   - [Views](#views)
+  - [User API Example](#user-api-example)
 - [Post App](#post-app)
   - [Models](#models-1)
     - [Post model](#post-model)
@@ -21,6 +22,7 @@
     - [Tag model](#tag-model)
   - [Urls](#urls-1)
   - [Views](#views-1)
+  - [Post API example](#post-api-example)
 - [Notification App](#notification-app)
   - [Models](#models-2)
   - [Urls](#urls-2)
@@ -29,7 +31,8 @@
 <br></br>
 
 # Overview
-![new명세](https://user-images.githubusercontent.com/81140673/196373512-fc2c68a4-f84e-4c1c-aa44-d33604727ec6.png)
+![new명세](https://user-images.githubusercontent.com/81140673/200158751-3a95ea8e-97ad-48fa-85c7-0045455749ef.png)
+
 - Medium alternative은 User, Post, Notification 앱으로 구성된 장고 프로젝트입니다. 
 
 
@@ -89,6 +92,40 @@
 |FollowUser|Post|팔로우|O|
 |UnFollowUser|Delete|언팔로우|O|
 |UserProfile|Get|마이페이지|O|
+
+
+## User API Example
+- POST /v1/user/register/
+```json
+{
+  "username":"username", //required
+  "password":"password", //required
+  "nickname":"nickname",
+  "short_bio":"short_bio",
+  "url":"https://tomatolife.tistory.com/"
+  // photo : insomnia setting에서 전송
+}
+```
+- POST /v1/user/login/
+```json
+{
+  "username":"username",
+  "password":"password"
+}
+```
+
+- POST /v1/user/follow/<str:username>/
+```json
+no content
+```
+
+- POST /v1/user/unfollow/<str:username>/
+```json
+no content
+```
+
+- GET /v1/user/profile/
+
 
 <br></br>
 
@@ -201,6 +238,56 @@
 |TagCommentList|Get|X|
 
 <br></br>
+
+## Post API example
+- GET /v1/post/
+
+
+- POST /v1/post/
+```json
+{
+  "title":"title",
+  "description":"description",
+  "create_tag":"#tag #comment #python" //선택
+}
+```
+
+- GET /v1/post/<int:pk>/
+- PUT /v1/post/<int:pk>/
+```json
+{
+  "title":"title",
+  "description":"description",
+  "create_tag":"#tag #comment #python" //선택
+}
+```
+
+- DELETE /v1/post/<int:pk>/
+- GET /v1/post/<int:pk>/comment/
+- POST /v1/post/<int:pk>/comment/
+```json
+{
+  "content":"content",
+  "parent_comment":1, // 선택
+  "create_tag":"#tag #comment #python" //선택
+}
+```
+
+- PUT /v1/post/<int:pk>/comment/<int:pk2>/
+```json
+{
+  "content":"content",
+  "parent_comment":1, // 선택
+  "create_tag":"#tag #comment #python" //선택
+}
+```
+
+- DELETE /v1/post/<int:pk>/comment/<int:pk2>/
+- GET /v1/post/<int:pk>/clapse/
+- POST /v1/post/<int:pk>/clapse/
+- DELETE /v1/post/<int:pk>/unclapse/
+- GET /v1/post/tag/<str:tagname>/post/
+- GET /v1/post/tag/<str:tagname>/comment/
 
 # Notification App
 - Notification 앱은 사용자에게 알림을 보내는 기능을 합니다. 

@@ -13,6 +13,10 @@ class User(AbstractUser):
     followers = models.ManyToManyField("self", blank=True)
     following = models.ManyToManyField("self", blank=True)
 
+    post_count = models.IntegerField(null=True)
+    followers_count = models.IntegerField(null=True)
+    following_count = models.IntegerField(null=True)
+
     @property
     def post_count(self):
         return self.post.all().count()

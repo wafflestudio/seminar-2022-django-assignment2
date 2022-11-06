@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from .serializers import PostListSerializer, PostDetailSerializer, ClapseSerializer, TagCommentSerializer, TagPostSerializer, CommentDetailSerializer, CommentListSerializer
 from .models import Post, Clapse, Comment, Tag
+from .pagination import PostPagination, CommentPagination, TagPagination
 from user.models import User as user_models
 from user import serializers as user_serializers
 from user.permissions import IsAuthorOrReadOnly
@@ -15,9 +16,12 @@ import re
 class PostList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
+    pagination_class = PostPagination
 
     def get(self, request, format=None):
         post = Post.objects.all()
+        print(str(post))
+
         serializer = PostListSerializer(
             post, many=True, context={'request': request}
         )
@@ -94,6 +98,7 @@ class PostDetail(APIView):
 class CommentList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
+    pagination_class = CommentPagination
 
     def post(self, request, pk, format=None):
         post = Post.objects.get(pk=pk)
@@ -119,6 +124,7 @@ class CommentList(APIView):
                 post=post,
                 parent_comment=parent_comment
             )
+
             create_tag = request.data.get("create_tag")
             tag_regex = re.findall(r'#([0-9a-zA-Z가-힣]*)', create_tag)
             tags_list = [Tag.objects.get_or_create(name=t) for t in tag_regex]
@@ -249,6 +255,7 @@ class UnClapseList(APIView):
 class TagPostList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
+    pagination_class = TagPagination
 
     def get(self, request, tagname, format=None):
 
@@ -272,6 +279,7 @@ class TagPostList(APIView):
 class TagCommentList(APIView):
 
     permission_class = (IsAuthorOrReadOnly, )
+    pagination_class = TagPagination
 
     def get(self, request, tagname, format=None):
 
