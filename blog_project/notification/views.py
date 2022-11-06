@@ -1,8 +1,11 @@
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status
+
 from .models import Notification
 from .serializers import NotificationSerializer
+from .pagination import NotificationPagination
+
 from user.permissions import IsAuthorOrReadOnly
 
 # Create your views here.
@@ -11,6 +14,7 @@ from user.permissions import IsAuthorOrReadOnly
 class NotificationList(APIView):
 
     permission_classes = (IsAuthorOrReadOnly, )
+    pagination_class = NotificationPagination
 
     def get(self, request, format=None):
         current_user = request.user
@@ -23,6 +27,7 @@ class NotificationList(APIView):
 
 
 def create_notification(notify_from, notify_to, notification_type, post=None, comment=None):
+
     notification = Notification.objects.create(
         notify_from=notify_from,
         notify_to=notify_to,

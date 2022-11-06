@@ -1,5 +1,4 @@
 from rest_framework.pagination import CursorPagination
-from .models import Post, Clapse, Comment, Tag
 
 
 class PostPagination(CursorPagination):

@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework import generics
 from .serializers import PostListSerializer, PostDetailSerializer, ClapseSerializer, TagCommentSerializer, TagPostSerializer, CommentDetailSerializer, CommentListSerializer
 from .models import Post, Clapse, Comment, Tag
 from .pagination import PostPagination, CommentPagination, TagPagination
@@ -15,12 +16,11 @@ import re
 
 class PostList(APIView):
 
-    permission_class = (IsAuthorOrReadOnly, )
+    permission_class = IsAuthorOrReadOnly
     pagination_class = PostPagination
 
     def get(self, request, format=None):
         post = Post.objects.all()
-        print(str(post))
 
         serializer = PostListSerializer(
             post, many=True, context={'request': request}
