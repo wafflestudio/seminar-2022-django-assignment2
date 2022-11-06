@@ -1,10 +1,6 @@
-from django.http import JsonResponse
-from django.shortcuts import render
-from rest_framework import generics, request, exceptions
-from rest_framework.authentication import TokenAuthentication
+from rest_framework import generics, exceptions
 from rest_framework.pagination import CursorPagination
-from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
-from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAdminUser
 
 from posts.models import Post, Comment
 from posts.permissions import IsAuthorOrReadOnly, IsAuthor
@@ -17,12 +13,9 @@ class PostCommentPagination(CursorPagination):
 
 
 class PostListView(generics.ListCreateAPIView):
-    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticatedOrReadOnly]
     pagination_class = PostCommentPagination
     queryset = Post.objects.all()
-
-    # serializer_class = PostSerializer
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
