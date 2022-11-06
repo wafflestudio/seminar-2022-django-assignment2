@@ -61,6 +61,11 @@ class CommentSerializer(TaggedSerializer):
 
 
 class UserFollowingSerializer(serializers.ModelSerializer):
+    def validate(self, attrs):
+        if self.context['request'].user == attrs['following_user']:
+            raise serializers.ValidationError({'following': 'Following user field must be different from user.'})
+        return attrs
+
     class Meta:
         model = UserFollowing
         fields = ['user', 'following_user']
@@ -73,7 +78,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({"password": "Password fields didn't match."})
+            raise serializers.ValidationError({'password': "Password fields didn't match."})
         return attrs
 
     def create(self, validated_data):

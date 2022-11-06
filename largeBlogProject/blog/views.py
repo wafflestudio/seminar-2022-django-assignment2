@@ -1,5 +1,7 @@
 from django.contrib.auth.models import User
 from django.db.models import Count, F
+from django.db import IntegrityError
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
@@ -87,6 +89,13 @@ class UserFollowingList(generics.ListCreateAPIView):
         pk = self.kwargs['pk']
         user = get_object_or_404(User, pk=pk)
         return user.following.all()
+
+    def create(self, request, *args, **kwargs):
+        try:
+            response = super().create(request, *args, **kwargs)
+        except IntegrityError as e:
+            return HttpResponseBadRequest(e)
+        return response
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)

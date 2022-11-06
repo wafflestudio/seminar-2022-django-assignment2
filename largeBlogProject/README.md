@@ -130,23 +130,23 @@ Arguments는 댓글을 생성할 때와 동일하다.
 
 `POST /users/signup/`
 
-| Argument         | Required |
-|------------------|----------|
-| Username         | true     |
-| Password         | true     |
-| Password confirm | true     |
-| Email            | true     |
-| First name       | false    |
-| Last name        | false    |
+| Argument         |
+|------------------|
+| Username         |
+| Password         |
+| Password confirm |
+| Email            |
+| First name       |
+| Last name        |
 
 ### Sign In
 
 `POST /users/signin/`
 
-| Argument         | Required |
-|------------------|----------|
-| Username         | true     |
-| Password         | true     |
+| Argument         |
+|------------------|
+| Username         |
+| Password         |
 
 | Return Value |
 |--------------|
