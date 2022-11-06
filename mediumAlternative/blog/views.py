@@ -1,12 +1,9 @@
 from rest_framework import mixins, generics
 from rest_framework.permissions import *
-from django.contrib.auth.forms import UserCreationForm
 
-from django.contrib.auth.models import User
-from blog.models import Post
-from blog.models import Comment
 from blog.permissions import *
 from blog.serializers import *
+from blog.paginations import *
 
 
 class UserCreateView(generics.CreateAPIView):
@@ -18,6 +15,7 @@ class PostListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminUser | IsAuthenticatedOrReadOnly]
     queryset = Post.objects.all()
     serializer_class = PostListSerializer
+    pagination_class = PostListPagination
 
 
 class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
@@ -30,6 +28,7 @@ class CommentListView(generics.ListCreateAPIView):
     permission_classes = [IsAdminUser | IsAuthenticatedOrReadOnly]
     serializer_class = CommentListSerializer
     queryset = Comment.objects.all()
+    pagination_class = CommentListPagination
 
     def get(self, request, *args, **kwargs):
         self.queryset = self.get_queryset().filter(post_id__exact=kwargs['post_pk'])
@@ -56,7 +55,6 @@ class CommentUpdateDeleteView(mixins.UpdateModelMixin,
         return self.update(request, *args, **kwargs)
 
     def patch(self, request, *args, **kwargs):
-
         return self.partial_update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):

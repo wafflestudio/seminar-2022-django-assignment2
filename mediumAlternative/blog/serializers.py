@@ -1,5 +1,4 @@
-from rest_framework import serializers, status
-from rest_framework.response import Response
+from rest_framework import serializers
 from django.contrib.auth.models import User
 from blog.models import Post
 from blog.models import Comment
@@ -28,7 +27,8 @@ class PostListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        return {**representation, 'created_by': representation.get('created_by')['username']}
+        return {**representation, 'created_by': representation.get('created_by')['username'],
+                'description': representation.get('description')[:300]}
 
     def to_internal_value(self, data):
         internal_value = super().to_internal_value(data)
