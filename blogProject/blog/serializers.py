@@ -39,7 +39,7 @@ class PostListSerializer(serializers.ModelSerializer):
         except KeyError:
             return super().create(validated_data)
 
-        post = Post.objects.create(**validated_data)
+        post = super().create(validated_data)
         for tag_data in tags_data:
             try:
                 tag = Tag.objects.get(content=tag_data['content'])
@@ -68,9 +68,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
         try:
             tags_data = validated_data.pop('tags')
         except KeyError:
-            return super().update(validated_data)
+            return super().update(instance, validated_data)
 
-        post = Post.objects.get(id=instance.id)
+        post = super().update(instance, validated_data)
         TagToPostOrComment.objects.filter(post_id=post.id).delete()
         for tag_data in tags_data:
             try:
@@ -94,10 +94,27 @@ class CommentSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super().to_representation(instance)
         rep['created_by'] = instance.created_by.username
+        return rep
 
     def to_internal_value(self, data):
         internal_value = super().to_internal_value(data)
         return {**internal_value, 'post': Post.objects.get(id=self.context['post']), 'created_by': self.context['request'].user}
+
+    def create(self, validated_data):
+        try:
+            tags_data = validated_data.pop('tags')
+        except KeyError:
+            return super().create(validated_data)
+
+        comment = super().create(validated_data)
+        for tag_data in tags_data:
+            try:
+                tag = Tag.objects.get(content=tag_data['content'])
+            except Tag.DoesNotExist:
+                tag = Tag.objects.create(**tag_data)
+            finally:
+                TagToPostOrComment.objects.create(comment_id=comment.id, tag_id=tag.id)
+        return comment
 
     class Meta:
         model = Comment
@@ -116,6 +133,23 @@ class CommentDetailSerializer(serializers.ModelSerializer):
         if self.context['request'] == 'POST':
             internal_value = {**internal_value, 'is_updated': True}
         return {**internal_value, 'is_updated': True}
+
+    def update(self, instance, validated_data):
+        try:
+            tags_data = validated_data.pop('tags')
+        except KeyError:
+            return super().update(instance, validated_data)
+
+        comment = super().update(instance, validated_data)
+        TagToPostOrComment.objects.filter(comment_id=comment.id).delete()
+        for tag_data in tags_data:
+            try:
+                tag = Tag.objects.get(content=tag_data['content'])
+            except Tag.DoesNotExist:
+                tag = Tag.objects.create(**tag_data)
+            finally:
+                TagToPostOrComment.objects.create(comment_id=comment.id, tag_id=tag.id)
+        return comment
 
     class Meta:
         model = Comment
