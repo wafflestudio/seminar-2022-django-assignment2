@@ -11,10 +11,7 @@
 - [Overview](#overview)
   - [User API Example](#user-api-example)
   - [Post API example](#post-api-example)
-- [Notification App](#notification-app)
-  - [Models](#models)
-  - [Urls](#urls)
-  - [Views](#views)
+  - [Notification API example](#notification-api-example)
   - [environment](#environment)
 <br></br>
 
@@ -120,41 +117,11 @@ no content
 - GET /v1/post/tag/<str:tagname>/post/
 - GET /v1/post/tag/<str:tagname>/comment/
 
-# Notification App
-- Notification 앱은 사용자에게 알림을 보내는 기능을 합니다. 
 <br></br>
 
-## Models
-- Notification 모델은 다음과 같습니다. 
+## Notification API example
+- GET /v1/notification/
 
-|Field|Type|
-|-|-|
-|notify_from|ForeignKey(User)|
-|notify_to|ForeignKey(User)|
-|notification_type|CharField|
-|post|ForeignKey(Post)|
-|comment|TextField|
-|created_at|DateTimeField|
-
-<br></br>
-
-## Urls
-- Notification URL은 다음과 같습니다. 
-
-
-|url|viewset|authentication|
-|-|-|-|
-|''|NotificationList|O|
-
-<br></br>
-
-## Views
-- Notification View는 다음과 같습니다. 
-
-
-|Class|Method|Authentication|
-|-|-|-|
-|NotificationList|Get|O|
 
 <br></br>
 
