@@ -1,12 +1,10 @@
-from django.contrib.auth.models import User
-from rest_framework import mixins, generics, permissions
 from django.db.models import Count, F
+from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
 
 from blog.models import Post, Comment, Tag
-from blog.serializers import PostListSerializer, PostSerializer, CommentListSerializer, CommentSerializer, \
-    RegisterSerializer
 from blog.permissions import IsOwnerOrReadOnly
+from blog.serializers import PostListSerializer, PostSerializer, CommentSerializer, RegisterSerializer
 
 
 def delete_unused_tags():
@@ -47,7 +45,7 @@ class PostDetail(generics.RetrieveUpdateDestroyAPIView):
 
 class CommentList(generics.ListCreateAPIView):
     model = Comment
-    serializer_class = CommentListSerializer
+    serializer_class = CommentSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):

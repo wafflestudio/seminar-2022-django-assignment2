@@ -1,7 +1,7 @@
+from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
-from django.contrib.auth.models import User
 
 from blog.models import Post, Comment, Tag
 
@@ -38,11 +38,6 @@ class TaggedSerializer(serializers.ModelSerializer):
 
 
 class PostSerializer(TaggedSerializer):
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        ret['created_by'] = instance.created_by.username
-        return ret
-
     class Meta:
         model = Post
         fields = '__all__'
@@ -63,13 +58,6 @@ class CommentSerializer(TaggedSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
-
-
-class CommentListSerializer(CommentSerializer):
-    def to_representation(self, instance):
-        ret = super().to_representation(instance)
-        ret['created_by'] = instance.created_by.username
-        return ret
 
 
 class RegisterSerializer(serializers.ModelSerializer):
