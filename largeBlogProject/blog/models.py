@@ -32,3 +32,15 @@ class Comment(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+
+class UserFollowing(models.Model):
+    user = models.ForeignKey(User, related_name='following', on_delete=models.CASCADE, editable=False)
+    following_user = models.ForeignKey(User, related_name='followers', on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = property(lambda self: self.user)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'following_user'], name='can follow the same user once'),
+        ]

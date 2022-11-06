@@ -3,7 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from blog.models import Post, Comment, Tag
+from blog.models import Post, Comment, Tag, UserFollowing
 
 
 def update_tag(instance, tag_str):
@@ -58,6 +58,12 @@ class CommentSerializer(TaggedSerializer):
     class Meta:
         model = Comment
         fields = '__all__'
+
+
+class UserFollowingSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserFollowing
+        fields = ['user', 'following_user']
 
 
 class RegisterSerializer(serializers.ModelSerializer):

@@ -1,10 +1,13 @@
+from django.contrib.auth.models import User
 from django.db.models import Count, F
+from django.shortcuts import get_object_or_404
 from rest_framework import generics, permissions
 from rest_framework.permissions import AllowAny
 
-from blog.models import Post, Comment, Tag
-from blog.permissions import IsOwnerOrReadOnly
-from blog.serializers import PostListSerializer, PostSerializer, CommentSerializer, RegisterSerializer
+from blog.models import Post, Comment, Tag, UserFollowing
+from blog.permissions import IsOwnerOrReadOnly, IsObjectOwnerOrReadOnly
+from blog.serializers import PostListSerializer, PostSerializer, CommentSerializer, RegisterSerializer, \
+    UserFollowingSerializer
 
 
 def delete_unused_tags():
@@ -36,7 +39,7 @@ class PostList(generics.ListCreateAPIView):
 class PostDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsOwnerOrReadOnly | permissions.IsAdminUser]
+    permission_classes = [IsObjectOwnerOrReadOnly | permissions.IsAdminUser]
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
@@ -68,13 +71,46 @@ class CommentList(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    permission_classes = [IsOwnerOrReadOnly | permissions.IsAdminUser]
+    permission_classes = [IsObjectOwnerOrReadOnly | permissions.IsAdminUser]
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
         delete_unused_tags()
 
 
+class UserFollowingList(generics.ListCreateAPIView):
+    model = UserFollowing
+    serializer_class = UserFollowingSerializer
+    permission_classes = [IsOwnerOrReadOnly | permissions.IsAdminUser]
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        user = get_object_or_404(User, pk=pk)
+        return user.following.all()
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class UserFollowersList(generics.ListAPIView):
+    serializer_class = UserFollowingSerializer
+
+    def get_queryset(self):
+        pk = self.kwargs['pk']
+        user = get_object_or_404(User, pk=pk)
+        return user.followers.all()
+
+
+class UserFollowingDestroy(generics.DestroyAPIView):
+    permission_classes = [IsOwnerOrReadOnly | permissions.IsAdminUser]
+    serializer_class = UserFollowingSerializer
+
+    def get_object(self):
+        pk = self.kwargs['pk']
+        other_pk = self.kwargs['other_pk']
+        return get_object_or_404(UserFollowing, user=pk, following_user=other_pk)
+
+
 class UserSignup(generics.CreateAPIView):
-    permission_classes = [AllowAny]
     serializer_class = RegisterSerializer
+    permission_classes = [AllowAny]

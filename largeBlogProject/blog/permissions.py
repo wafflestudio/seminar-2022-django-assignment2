@@ -4,6 +4,13 @@ from blog.models import Post
 
 
 class IsOwnerOrReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        if request.method in SAFE_METHODS:
+            return True
+        return view.kwargs['pk'] == request.user.id
+
+
+class IsObjectOwnerOrReadOnly(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in SAFE_METHODS:
             return True

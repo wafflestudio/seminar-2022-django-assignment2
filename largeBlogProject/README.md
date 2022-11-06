@@ -1,5 +1,27 @@
 # Large Blog REST API Reference
 
+## Follower-Following System
+
+### List the user's followings
+
+`GET /users/:id/following/`
+
+### List the user's followers
+
+`GET /users/:id/followers/`
+
+### Follow a user
+
+`POST /users/:id/following/`
+
+| Argument       | Type    | Detail      |
+|----------------|---------|-------------|
+| following_user | integer | 팔로우할 유저의 id |
+
+### Unfollow a user
+
+`DELETE /users/:id/following/:following_id/`
+
 ## Post
 
 ### Model
@@ -16,7 +38,7 @@
 | description  | string   | 글의 본문                 |
 
 
-### List
+### List posts
 
 `GET /posts/`
 
@@ -24,7 +46,7 @@
 |----------|---------------------------|
 | tag      | 결과를 해당 태그가 달린 post로 한정한다. |
 
-### Create
+### Create a post
 
 `POST /posts/`
 
@@ -35,11 +57,11 @@
 | reading_time |                                            |
 | description  | 필수                                         |
 
-### Retrieve
+### Retrieve a post
 
 `GET /posts/:id`
 
-### Update
+### Update a post
 
 `PUT /posts/:id` update a post
 
@@ -47,7 +69,7 @@
 
 Arguments는 글을 생성할 때와 동일하다.
 
-### Delete
+### Delete a post
 
 `DELETE /posts/:id`
 
@@ -67,7 +89,7 @@ Arguments는 글을 생성할 때와 동일하다.
 | content    | string   | 댓글의 본문                   |
 
 
-### List
+### List comments
 
 `GET /comments/`
 
@@ -76,7 +98,7 @@ Arguments는 글을 생성할 때와 동일하다.
 | post     | 결과를 해당 post에 달린 comment로 한정한다. |
 | tag      | 결과를 해당 태그가 달린 comment로 한정한다.   |
 
-### Create
+### Create a comment
 
 `POST /comments/`
 
@@ -86,11 +108,11 @@ Arguments는 글을 생성할 때와 동일하다.
 | content     | 필수                                     |
 | post        | 필수                                     |
 
-### Retrieve
+### Retrieve a comment
 
 `GET /comments/:id`
 
-### Update
+### Update a comment
 
 `PUT /comments/:id` update a comment
 
@@ -98,7 +120,7 @@ Arguments는 글을 생성할 때와 동일하다.
 
 Arguments는 댓글을 생성할 때와 동일하다.
 
-### Delete
+### Delete a comment
 
 `DELETE /comments/:id`
 
