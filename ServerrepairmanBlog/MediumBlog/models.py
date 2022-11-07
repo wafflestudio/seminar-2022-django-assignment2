@@ -7,13 +7,15 @@ from rest_framework.authtoken.models import  Token
 
 class User(AbstractUser):
 
-    is_authorized = models.BooleanField(default=False)
+    is_authorized = models.BooleanField(default=True)
+    """
     bookmarks = models.ManyToManyField('Post', related_name='bookmarks')
     clap_posts = models.ManyToManyField('Post', related_name='claps')
     clap_comments = models.ManyToManyField('Comment', related_name='claps')
     responded_posts = models.ManyToManyField('Post', related_name='responses')
     responded_comments = models.ManyToManyField('Comment', related_name='responses')
     subscribers = models.ManyToManyField('self', related_name='subscribers')
+    """
 
 
 class Post(models.Model):
@@ -23,8 +25,8 @@ class Post(models.Model):
     updated_at = models.DateTimeField(null=True, blank=True)
     is_updated = models.BooleanField(default=False)
 
-    published_at = models.DateTimeField(null=True, blank=True)
-    is_published = models.BooleanField(default=False)
+#    published_at = models.DateTimeField(null=True, blank=True)
+#    is_published = models.BooleanField(default=False)
 
     title = models.CharField(max_length=100)
     content = models.TextField()
