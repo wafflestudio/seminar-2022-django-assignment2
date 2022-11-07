@@ -90,10 +90,10 @@ class PostPermissionListCreateView(generics.ListCreateAPIView):
 class PostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCreator]
     queryset = Post.objects.all().order_by('-created_at')
-    http_method_names = ['get', 'update', 'delete']
 
     def update(self, request, *args, **kwargs):
         super().update(request, *args, **kwargs)
+
         post = get_object_or_404(Post, id=kwargs['pk'])
         post.updated_at = timezone.now()
         post.is_updated = True
@@ -187,29 +187,25 @@ class CommentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 
 class SignupView(APIView):
 
-    @api_view
     def post(self, request):
-        try:
+#        try:
             user = User.objects.create_user(username=request.data['id'], password=request.data['password'])
             user.save()
 
             token = Token.objects.create(user=user)
             return Response({"Token": token.key})
 
-        except IntegrityError:
-            raise Http404("Already Exist id")
+#        except IntegrityError:
+#            raise Http404("Already Exist id")
 
-        except:
-            raise Http404("Register Failed")
+#        except:
+#            raise Http404("Register Failed")
 
 
 class SigninView(APIView):
 
-    @api_view
     def post(self, request):
-
         try:
-            print(request.user)
             user = User.objects.get(username=request.data['id'])
 
             if user.check_password(request.data['password']):
