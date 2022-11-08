@@ -249,4 +249,4 @@ class SigninView(APIView):
                 return response_with_detail(400, detail="password not correct")
 
         except KeyError:
-            return Http404
+            return response_with_detail(400)

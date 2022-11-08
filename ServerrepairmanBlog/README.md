@@ -1,9 +1,9 @@
 ### API 주소
-- [ ] User
+- [] User
 
-  - /blog/post/register/
+  - /blog/register/
 
-    [ ] POST : 회원가입 및 authtoken 발급
+    [] POST : 회원가입 및 authtoken 발급
 
         ```
         request : {
@@ -15,6 +15,21 @@
         }
         response : {
             "Token" : ""
+        }
+        ```
+
+  - /blog/login/
+
+    [] POST : id, password로 authtoken을 요청
+
+        ```
+        request : {
+        	"id" : "test",
+        	"password" : "test"
+        }
+        response : {
+	        "id": "test",
+	        "Token": "4b59b75bf57b41947448da5ad029565bf31a5132"
         }
         ```
 
