@@ -2,6 +2,7 @@
 - [ ] User
 
   - /blog/post/register/
+
     [ ] POST : 회원가입 및 authtoken 발급
 
         ```
@@ -17,9 +18,11 @@
         }
         ```
 
-- [ ] Post 
+- [] Post 
+
   - /blog/posts/
-    [ ] GET : post list 요청. 생성시간 역순 기준, 5개 기준으로 pagination
+
+    [] GET : post list 요청. 생성시간 역순 기준, 5개 기준으로 pagination
 
         ```
         request : {}
@@ -43,7 +46,7 @@
         }
         ```
 
-    [ ] POST : 새 post 생성. 로그인 필요
+    [] POST : 새 post 생성. 로그인 필요
 
         ```
         request : {
@@ -72,7 +75,8 @@
         }
         ```
   - /blog/posts/<int:pk>/
-    [ ] GET : id가 pk인 post의 detail을 요청.
+
+    [] GET : id가 pk인 post의 detail을 요청.
 
         ```
         request : {}
@@ -94,7 +98,7 @@
         }
         ```
 
-    [ ] PUT : id가 pk인 post를 수정. pk번 post 생성자/Admin 만 가능
+    [] PUT : id가 pk인 post를 수정. pk번 post 생성자/Admin 만 가능
 
         ```
         request : {
@@ -123,7 +127,7 @@
         }
         ```
 
-    [ ] PATCH : id가 pk인 post를 일부만 수정. pk번 post 생성자/Admin 만 가능
+    [] PATCH : id가 pk인 post를 일부만 수정. pk번 post 생성자/Admin 만 가능
 
         ```
         request : {
@@ -147,16 +151,18 @@
         }
         ```
 
-    [ ] DELETE : id가 pk인 post를 제거. pk번 post 생성자/Admin 만 가능
+    [] DELETE : id가 pk인 post를 제거. pk번 post 생성자/Admin 만 가능
 
         ```
         request : {}
         response : 204 No Content
         ```
 
-- [ ] Comment
+- [] Comment
+
   - /blog/comments/
-    [ ] GET : comment의 리스트를 요청
+
+    [] GET : comment의 리스트를 요청
 
        ```
        request : {}
@@ -179,7 +185,7 @@
        }
        ```
 
-    [ ] POST : 새 comment를 생성
+    [] POST : 새 comment를 생성
     
         ```
         request : {
@@ -202,7 +208,8 @@
         ```
 
   - /blog/comments/<int:pk>/
-    [ ] GET : id가 pk인 comment의 detail을 요청
+
+    [] GET : id가 pk인 comment의 detail을 요청
 
         ```
         request : {}
@@ -224,7 +231,7 @@
         }
         ```
 
-    [ ] PUT : id가 pk인 comment를 수정. pk번 comment 생성자/Admin 만 가능
+    [] PUT : id가 pk인 comment를 수정. pk번 comment 생성자/Admin 만 가능
 
         ```
         request : {
@@ -245,7 +252,7 @@
         }
         ```
 
-    [ ] PATCH : id가 pk인 comment를 일부만 수정. pk번 comment 생성자/Admin 만 가능
+    [] PATCH : id가 pk인 comment를 일부만 수정. pk번 comment 생성자/Admin 만 가능
 
         ```
         request : {
@@ -266,16 +273,16 @@
         }
         ```
 
-    [ ] DELETE : id가 pk인 comment를 제거. pk번 comment 생성자/Admin 만 가능
+    [] DELETE : id가 pk인 comment를 제거. pk번 comment 생성자/Admin 만 가능
 
         ```
         request : {}
         response : 204 No Content
         ```
 
-  - [ ] /blog/posts/<int:post_id>/comments/
+  - [] /blog/posts/<int:post_id>/comments/
     
-    [ ] GET : id가 post_id인 post에 달린 comment의 리스트를 요청.
+    [] GET : id가 post_id인 post에 달린 comment의 리스트를 요청.
 
         ```
         request : {}
@@ -299,9 +306,11 @@
         }
         ```
 
-- [ ] Tag
+- [] Tag
+
   - /blog/posts/tags/
-    [ ] GET : post에 붙은 태그들의 리스트를 요청
+
+    [] GET : post에 붙은 태그들의 리스트를 요청
 
         ```
         request : {}
@@ -324,7 +333,8 @@
         ```
 
   - /blog/posts/tags/<str:tag>/
-    [ ] GET : tag가 태그로 붙은 post의 list를 요청. 생성시간 역순 기준
+
+    [] GET : tag가 태그로 붙은 post의 list를 요청. 생성시간 역순 기준
 
         ```
         request : {}
@@ -349,7 +359,8 @@
         ```
 
   - /blog/comments/tags/
-    [ ] GET : comment에 붙은 태그들의 리스트를 요청
+
+    [] GET : comment에 붙은 태그들의 리스트를 요청
 
         ```
         request : {}
@@ -369,7 +380,8 @@
         ```
 
   - /blog/posts/tags/<str:tag>/
-    [ ] GET : tag가 태그로 붙은 comment의 list를 요청. 생성시간 역순 기준
+
+    [] GET : tag가 태그로 붙은 comment의 list를 요청. 생성시간 역순 기준
 
         ```
         request : {}
