@@ -1,7 +1,8 @@
 import json
+from typing import Union
 
 from django.db.models import Count
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 # Create your views here.
@@ -65,8 +66,8 @@ def delete_not_used_many_to_many(my_m2m_class, obj_name):
             tag.delete()
 
 
-def response_with_detail(status, detail=""):
-    return HttpResponse('{"detail" : "'+ detail + '"}', status=status)
+def response_with_detail(status, **kwargs):
+    return JsonResponse(kwargs, status=status)
 
 
 class PostPermissionListCreateView(generics.ListCreateAPIView):
@@ -84,9 +85,10 @@ class PostPermissionListCreateView(generics.ListCreateAPIView):
                     title=request.data['title'], content=request.data['content'])
         post.save()
 
-        update_posttag(request.data['tags'], post)
+        if 'tags' in request.data.keys():
+            update_posttag(request.data['tags'], post)
 
-        serializer_post = PostListSerializer(post)
+        serializer_post = PostDetailSerializer(post)
         response = Response(data=serializer_post.data)  # super().create(request, *args, **kwargs)
         return response
 
@@ -103,7 +105,6 @@ class PostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         post.is_updated = True
         if 'tags' in request.data:
             update_posttag(request.data['tags'], post)
-            print(post)
 
         serializer_post = PostDetailSerializer(post)
         response = Response(data=serializer_post.data)
@@ -125,7 +126,10 @@ class PostPermissionListCreateViewByTag(PostPermissionListCreateView):
     http_method_names = ['get']
 
     def get_queryset(self):
-        return Post.objects.filter(tags__content=self.kwargs['tag'])
+        got_queryset = Post.objects.filter(tags__content=self.kwargs['tag']).order_by('-created_at')
+        if len(got_queryset) == 0:
+            raise Http404
+        return got_queryset
 
 
 class CommentPermissionListCreateView(generics.ListCreateAPIView):
@@ -150,12 +154,22 @@ class CommentPermissionListCreateView(generics.ListCreateAPIView):
             return response
 
         except Http404:
-            return response_with_detail(404, "post_id " + str(request.data['post_id']) + " does not exist")
+            return response_with_detail(404, detail='post_id ' + str(request.data['post_id']) + ' does not exist')
+
+        except KeyError:
+            if 'post_id' not in request.data.keys():
+                return response_with_detail(400, post_id="is required")
+            if 'content' not in request.data.keys():
+                return response_with_detail(400, post_id="is required")
 
 
 class CommentPermissionListCreateViewByPost(CommentPermissionListCreateView):
     def get_queryset(self):
-        return Comment.objects.filter(post=self.kwargs['post_id'])
+        got_queryset = Comment.objects.filter(post=self.kwargs['post_id']).order_by('-created_at')
+
+        if len(got_queryset) == 0:
+            raise Http404
+        return got_queryset
 
     def post(self, request, *args, **kwags):
         request.data['post_id'] = self.kwargs['post_id']
@@ -209,10 +223,7 @@ class SignupView(APIView):
             return Response({"Token": token.key})
 
         except IntegrityError:
-            return response_with_detail(409, "id already exists")
-
-        except:
-            return response_with_detail(400)
+            return response_with_detail(409, detail="id already exists")
 
 
 class SigninView(APIView):
@@ -225,10 +236,7 @@ class SigninView(APIView):
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({"id": request.data['id'], "Token": token.key})
             else:
-                return response_with_detail(400)
+                return response_with_detail(400, detail="password not correct")
 
-        except Http404:
-            return response_with_detail(404)
-
-        except:
-            return response_with_detail(400)
+        except KeyError:
+            return Http404

@@ -38,7 +38,7 @@ class PostListSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        if len(representation['content'])>self.CONTENT_LENGTH_LIMIT:
+        if len(representation['content']) > self.CONTENT_LENGTH_LIMIT:
             representation['content'] = representation['content'][0:self.CONTENT_LENGTH_LIMIT]
         return representation
 
