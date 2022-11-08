@@ -8,6 +8,7 @@ urlpatterns = [
     path('posts/tags/<str:tag>/', PostPermissionListCreateViewByTag.as_view()),
     path('posts/tags/', PostTagListView.as_view()),
     path('comments/tags/', CommentTagListView.as_view()),
+    path('comments/tags/<str:tag>/', CommentPermissionListCreateViewByTag.as_view()),
     path('comments/', CommentPermissionListCreateView.as_view()),
     path('comments/<int:pk>/', CommentRetrieveUpdateDestroyView.as_view()),
     path('posts/<int:post_id>/comments/', CommentPermissionListCreateViewByPost.as_view()),

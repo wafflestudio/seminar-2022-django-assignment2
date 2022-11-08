@@ -146,7 +146,7 @@ class CommentPermissionListCreateView(generics.ListCreateAPIView):
                           created_at=timezone.now(), content=request.data['content'])
             comment.save()
 
-            if 'tags' in request.data:
+            if 'tags' in request.data.keys():
                 update_commenttag(request.data['tags'], comment)
 
             serializer_comment = CommentDetailSerializer(comment)
@@ -208,13 +208,23 @@ class CommentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return CommentListSerializer
 
 
+class CommentPermissionListCreateViewByTag(CommentPermissionListCreateView):
+    http_method_names = ['get']
+
+    def get_queryset(self):
+        got_queryset = Comment.objects.filter(tags__content=self.kwargs['tag']).order_by('-created_at')
+        if len(got_queryset) == 0:
+            raise Http404
+        return got_queryset
+
+
 class SignupView(APIView):
 
     def post(self, request):
         try:
             user = User.objects.create_user(username=request.data['id'], password=request.data['password'],
                                             first_name=request.data.get('first_name', ''),
-                                            second_name=request.data.get('second_name', ''),
+                                            last_name=request.data.get('last_name', ''),
                                             email=request.data.get('email', '')
                                             )
             user.save()
