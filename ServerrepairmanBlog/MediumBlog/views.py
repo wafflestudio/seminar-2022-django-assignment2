@@ -65,6 +65,10 @@ def delete_not_used_many_to_many(my_m2m_class, obj_name):
             tag.delete()
 
 
+def response_with_detail(status, detail=""):
+    return HttpResponse('{"detail" : "'+ detail + '"}', status=status)
+
+
 class PostPermissionListCreateView(generics.ListCreateAPIView):
     permission_classes = [IsSafeOrAuthorizedUser]
     serializer_class = PostListSerializer
@@ -130,19 +134,23 @@ class CommentPermissionListCreateView(generics.ListCreateAPIView):
     serializer_class = CommentListSerializer
 
     def post(self, request, *args, **kwargs):
-        print(request)
-        request.data['created_by'] = request.user
-        post = Post.objects.get(id=request.data['post_id'])
+        try:
+            request.data['created_by'] = request.user
+            post = get_object_or_404(Post, id=request.data['post_id'])
 
-        comment = Comment(post=post, created_by=request.data['created_by'],
+            comment = Comment(post=post, created_by=request.data['created_by'],
                           created_at=timezone.now(), content=request.data['content'])
-        comment.save()
+            comment.save()
 
-        update_commenttag(request.data['tags'], comment)
+            if 'tags' in request.data:
+                update_commenttag(request.data['tags'], comment)
 
-        serializer_comment = CommentDetailSerializer(comment)
-        response = Response(data=serializer_comment.data)  # super().create(request, *args, **kwargs)
-        return response
+            serializer_comment = CommentDetailSerializer(comment)
+            response = Response(data=serializer_comment.data)  # super().create(request, *args, **kwargs)
+            return response
+
+        except Http404:
+            return response_with_detail(404, "post_id " + str(request.data['post_id']) + " does not exist")
 
 
 class CommentPermissionListCreateViewByPost(CommentPermissionListCreateView):
@@ -157,12 +165,13 @@ class CommentPermissionListCreateViewByPost(CommentPermissionListCreateView):
 class CommentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [IsCreator]
     queryset = Comment.objects.all()
-    http_method_names = ['get', 'update', 'delete']
 
     def update(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment, id=kwargs['pk'])
+        request.data['post'] = comment.post.id
+
         super().update(request, *args, **kwargs)
 
-        comment = get_object_or_404(Comment, id=kwargs['pk'])
         comment.updated_at = timezone.now()
         comment.is_updated = True
         if 'tags' in request.data:
@@ -188,31 +197,38 @@ class CommentRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 class SignupView(APIView):
 
     def post(self, request):
-#        try:
-            user = User.objects.create_user(username=request.data['id'], password=request.data['password'])
+        try:
+            user = User.objects.create_user(username=request.data['id'], password=request.data['password'],
+                                            first_name=request.data.get('first_name', ''),
+                                            second_name=request.data.get('second_name', ''),
+                                            email=request.data.get('email', '')
+                                            )
             user.save()
 
             token = Token.objects.create(user=user)
             return Response({"Token": token.key})
 
-#        except IntegrityError:
-#            raise Http404("Already Exist id")
+        except IntegrityError:
+            return response_with_detail(409, "id already exists")
 
-#        except:
-#            raise Http404("Register Failed")
+        except:
+            return response_with_detail(400)
 
 
 class SigninView(APIView):
 
     def post(self, request):
         try:
-            user = User.objects.get(username=request.data['id'])
+            user = get_object_or_404(User, username=request.data['id'])
 
             if user.check_password(request.data['password']):
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({"id": request.data['id'], "Token": token.key})
             else:
-                raise Http404("password not found")
+                return response_with_detail(400)
+
+        except Http404:
+            return response_with_detail(404)
 
         except:
-            raise Http404("Login Failed")
+            return response_with_detail(400)
