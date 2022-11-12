@@ -73,11 +73,11 @@ class TagToPostListView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
-        tag_list = request.data["tags"]
-        option = request.data.get("option", tag_option.TagOptions.DEFAULT)
+        tag_data_list = request.data["tags"]
+        option = request.data.get("option", tag_option.DEFAULT)
 
         posts = tag_option.TagOptions.tag_filter(
-            blog_models.Post, tag_list, option
+            blog_models.Post, tag_data_list, option
         )
         serializer = blog_serializers.PostSerializer(posts, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
@@ -89,10 +89,10 @@ class TagToCommentListView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
-        tag_list = request.data["tags"]
-        option = request.data.get("option", tag_option.TagOptions.DEFAULT)
+        tag_data_list = request.data["tags"]
+        option = request.data.get("option", tag_option.DEFAULT)
         comments = tag_option.TagOptions.tag_filter(
-            blog_models.Comment, tag_list, option
+            blog_models.Comment, tag_data_list, option
         )
         serializer = blog_serializers.CommentSerializer(comments, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)

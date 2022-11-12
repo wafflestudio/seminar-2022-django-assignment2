@@ -6,9 +6,10 @@ from rest_framework import exceptions
 
 from blog import models as blog_models
 
+DEFAULT = "AND"
+
 
 class TagOptions(str, enum.Enum):
-    DEFAULT = "AND"
     AND = "AND"
     OR = "OR"
 
@@ -23,7 +24,7 @@ class TagOptions(str, enum.Enum):
     def tag_filter(
         cls,
         target_model: Type[models.Model],
-        tag_list: List,
+        tag_data_list: List,
         initial_option: str,
     ) -> models.QuerySet[
         Optional[Union[blog_models.Post, blog_models.Comment]]
@@ -35,7 +36,7 @@ class TagOptions(str, enum.Enum):
                 f"Option '{option}' is invalid. Option must be either 'or' or 'and'"
             )
 
-        tag_names = [tag["name"] for tag in tag_list]
+        tag_names = [tag_data["name"] for tag_data in tag_data_list]
 
         if option == cls.AND:
             objects = target_model.objects.all()

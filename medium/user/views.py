@@ -21,8 +21,10 @@ class SignUpView(generics.CreateAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
+
         token = token_models.Token.objects.create(user=user)
         serializer.data["Token"] = token
+
         headers = self.get_success_headers(serializer.data)
         return response.Response(
             serializer.data, status=status.HTTP_201_CREATED, headers=headers
@@ -32,9 +34,7 @@ class SignUpView(generics.CreateAPIView):
 class LoginView(views.APIView):
     def post(self, request):
         user = auth.authenticate(**request.data)
-
         if user is not None:
             token = token_models.Token.objects.get(user=user)
             return response.Response({"Token": token.key})
-        else:
-            return response.Response(status=status.HTTP_401_UNAUTHORIZED)
+        return response.Response(status=status.HTTP_401_UNAUTHORIZED)
