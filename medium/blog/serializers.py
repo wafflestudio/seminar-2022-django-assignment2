@@ -8,7 +8,7 @@ _POST_LIST_CONTENT_MAX_LENGTH = 300
 
 
 class TagSerializer(serializers.ModelSerializer):
-    name = serializers.CharField()
+    name = serializers.CharField(max_length=blog_models.TAG_MAX_LENGTH)
 
     class Meta:
         model = blog_models.Tag
@@ -48,6 +48,7 @@ class PostSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     tags = TagSerializer(many=True, required=False)
+
     class Meta:
         model = blog_models.Comment
         fields = "__all__"
@@ -63,5 +64,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
         for tag_data in tags_data:
             tag, _ = blog_models.Tag.objects.get_or_create(**tag_data)
-            blog_models.TagToComment.objects.get_or_create(comment=comment, tag=tag)
+            blog_models.TagToComment.objects.get_or_create(
+                comment=comment, tag=tag
+            )
         return comment

@@ -10,6 +10,7 @@ from blog import models as blog_models
 from blog import paginations as blog_paginations
 from blog import permissions as blog_permissions
 from blog import serializers as blog_serializers
+from blog.services import tag_option
 
 
 class PostListCreateView(generics.ListCreateAPIView):
@@ -72,9 +73,12 @@ class TagToPostListView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
-        tags_data = request.data["tags"]
-        tag_names = [t["name"] for t in tags_data] 
-        posts = blog_models.Post.objects.filter(tags__name__in=tag_names)
+        tag_list = request.data["tags"]
+        option = request.data.get("option", "and")
+
+        posts = tag_option.TagOptions.tag_filter(
+            blog_models.Post, tag_list, option
+        )
         serializer = blog_serializers.PostSerializer(posts, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -85,8 +89,10 @@ class TagToCommentListView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
-        tags_data = request.data["tags"]
-        tag_names = [t["name"] for t in tags_data] 
-        comments = blog_models.Comment.objects.filter(tags__name__in=tag_names)
+        tag_list = request.data["tags"]
+        option = request.data.get("option", "and")
+        comments = tag_option.TagOptions.tag_filter(
+            blog_models.Comment, tag_list, option
+        )
         serializer = blog_serializers.CommentSerializer(comments, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)

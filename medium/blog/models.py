@@ -1,6 +1,8 @@
 from django.contrib.auth.models import User
 from django.db import models
 
+TAG_MAX_LENGTH = 30
+
 
 class Post(models.Model):
     pid = models.AutoField(primary_key=True)
@@ -40,7 +42,7 @@ class Comment(models.Model):
 
 
 class Tag(models.Model):
-    name = models.CharField(primary_key=True, max_length=30)
+    name = models.CharField(primary_key=True, max_length=TAG_MAX_LENGTH)
 
 
 class TagToPost(models.Model):
