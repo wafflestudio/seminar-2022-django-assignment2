@@ -8,6 +8,7 @@ from blog import models as blog_models
 
 
 class TagOptions(str, enum.Enum):
+    DEFAULT = "AND"
     AND = "AND"
     OR = "OR"
 

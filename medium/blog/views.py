@@ -74,7 +74,7 @@ class TagToPostListView(views.APIView):
 
     def get(self, request, format=None):
         tag_list = request.data["tags"]
-        option = request.data.get("option", "and")
+        option = request.data.get("option", tag_option.TagOptions.DEFAULT)
 
         posts = tag_option.TagOptions.tag_filter(
             blog_models.Post, tag_list, option
@@ -90,7 +90,7 @@ class TagToCommentListView(views.APIView):
 
     def get(self, request, format=None):
         tag_list = request.data["tags"]
-        option = request.data.get("option", "and")
+        option = request.data.get("option", tag_option.TagOptions.DEFAULT)
         comments = tag_option.TagOptions.tag_filter(
             blog_models.Comment, tag_list, option
         )

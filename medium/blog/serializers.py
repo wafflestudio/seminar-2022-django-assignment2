@@ -42,7 +42,7 @@ class PostSerializer(serializers.ModelSerializer):
 
         for tag_data in tags_data:
             tag, _ = blog_models.Tag.objects.get_or_create(**tag_data)
-            blog_models.TagToPost.objects.get_or_create(post=post, tag=tag)
+            blog_models.TagToPost.objects.create(post=post, tag=tag)
         return post
 
 
@@ -64,7 +64,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
         for tag_data in tags_data:
             tag, _ = blog_models.Tag.objects.get_or_create(**tag_data)
-            blog_models.TagToComment.objects.get_or_create(
+            blog_models.TagToComment.objects.create(
                 comment=comment, tag=tag
             )
         return comment

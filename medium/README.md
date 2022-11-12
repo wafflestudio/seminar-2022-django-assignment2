@@ -54,3 +54,139 @@ $ sh reformat.sh # -> black, isort
 | `GET`                           | `blog/tag/comment`                           | get all comments which contains tag       |
 
 #
+
+## API Call & Response Example
+
+### Sign up
+
+```bash
+# API Call
+curl --request POST \
+  --url http://127.0.0.1:8000/user/signup/ \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"username": "user1",
+	"password": "password1@",
+	"password2": "password1@",
+	"email": "user1@example.com",
+	"first_name": "user1",
+	"last_name": "user1"
+}'
+
+```
+
+```json
+# Response
+{
+	"username": "user1",
+	"email": "user1@example.com",
+	"first_name": "user1",
+	"last_name": "user1"
+}
+```
+
+### Login
+
+```bash
+# API Call
+curl --request POST \
+  --url http://127.0.0.1:8000/user/login/ \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"username": "user1",
+	"password": "password1@",
+	"password2": "password1@",
+	"email": "user1@example.com",
+	"first_name": "user1",
+	"last_name": "user1"
+}'
+```
+
+```json
+# Response
+{
+	"Token": "905XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+}
+```
+
+### Post New Blog Post
+
+```bash
+# API Call
+curl --request POST \
+  --url http://127.0.0.1:8000/user/login/ \
+  --header 'Authorization: Token 905XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX' \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"username": "user1",
+	"password": "password1@",
+	"password2": "password1@",
+	"email": "user1@example.com",
+	"first_name": "user1",
+	"last_name": "user1"
+}'
+```
+
+### Get All Blog Post Which contains all input tags
+
+```bash
+# API Call
+curl --request GET \
+  --url http://127.0.0.1:8000/blog/tag/post/ \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"tags": [
+		{
+			"name": "tag1"
+		}, 
+		{
+			"name": "tag2"
+		}
+	],
+	"option": "and"
+}'
+```
+
+```json
+# Response
+[
+	{
+		"pid": 2,
+		"tags": [
+			{
+				"name": "tag1"
+			},
+			{
+				"name": "tag2"
+			}
+		],
+		"title": "test post 2 : title",
+		"created_at": "2022-11-12T15:03:24.631312Z",
+		"updated_at": "2022-11-12T15:03:24.631336Z",
+		"content": "test post 2 : content",
+		"url": "",
+		"created_by": 1
+	},
+	{
+		"pid": 3,
+		"tags": [
+			{
+				"name": "tag1"
+			},
+			{
+				"name": "tag2"
+			},
+			{
+				"name": "tag3"
+			}
+		],
+		"title": "test post 3 : title",
+		"created_at": "2022-11-12T15:03:35.814587Z",
+		"updated_at": "2022-11-12T15:03:35.814610Z",
+		"content": "test post 3 : content",
+		"url": "",
+		"created_by": 1
+	}
+]
+```
+
