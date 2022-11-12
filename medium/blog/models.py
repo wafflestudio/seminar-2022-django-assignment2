@@ -10,6 +10,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     content = models.TextField("CONTENT")
     url = models.URLField(blank=True)
+    tags = models.ManyToManyField("Tag", through="TagToPost")
 
     class Meta:
         verbose_name = "post"
@@ -30,6 +31,7 @@ class Comment(models.Model):
     content = models.TextField("CONTENT")
     num_like = models.IntegerField(default=0)
     num_dislike = models.IntegerField(default=0)
+    tags = models.ManyToManyField("Tag", through="TagToComment")
 
     class Meta:
         verbose_name = "comment"

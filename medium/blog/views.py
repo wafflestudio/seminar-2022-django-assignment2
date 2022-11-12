@@ -1,7 +1,6 @@
 from rest_framework import authentication
 from rest_framework import generics
 from rest_framework import mixins
-from rest_framework import pagination
 from rest_framework import permissions
 from rest_framework import response
 from rest_framework import status
@@ -11,14 +10,6 @@ from blog import models as blog_models
 from blog import paginations as blog_paginations
 from blog import permissions as blog_permissions
 from blog import serializers as blog_serializers
-
-
-def _delete_remained_tag(tag: blog_models.Tag):
-    num_posts = len(blog_models.TagToPost.objects.filter(tag=tag.name))
-    num_comments = len(blog_models.TagToComment.objects.filter(tag=tag.name))
-
-    if num_posts + num_comments <= 1:
-        tag.delete()
 
 
 class PostListCreateView(generics.ListCreateAPIView):
@@ -34,15 +25,7 @@ class PostRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = [blog_permissions.IsPostCreator]
     queryset = blog_models.Post.objects.all()
     serializer_class = blog_serializers.PostSerializer
-
     lookup_field = "pid"
-
-    def perform_destroy(self, post: blog_models.Post):
-        tags_to_post = blog_models.TagToPost.objects.filter(post__pid=post.pid)
-        for ttp in tags_to_post:
-            tag = blog_models.Tag.objects.get(name=ttp.tag.name)
-            _delete_remained_tag(tag)
-        post.delete()
 
 
 class CommentListCreateView(generics.ListCreateAPIView):
@@ -68,7 +51,6 @@ class CommentUpdateDestroyView(
     permission_classes = [blog_permissions.IsCommentCreator]
     queryset = blog_models.Comment.objects.all()
     serializer_class = blog_serializers.CommentSerializer
-
     lookup_field = "cid"
 
     def put(self, request, *args, **kwargs):
@@ -79,16 +61,8 @@ class CommentUpdateDestroyView(
         request.data["post"] = kwargs.get("pid")
         return self.partial_update(request, *args, **kwargs)
 
-    def perform_destroy(self, comment: blog_models.Comment):
-        tags_to_comment = blog_models.TagToComment.objects.filter(
-            comment__pid=comment.cid
-        )
-        for ttc in tags_to_comment:
-            tag = blog_models.Tag.objects.get(name=ttc.tag.name)
-            _delete_remained_tag(tag)
-        comment.delete()
-
     def delete(self, request, *args, **kwargs):
+        request.data["post"] = kwargs.get("pid")
         return self.destroy(request, *args, **kwargs)
 
 
