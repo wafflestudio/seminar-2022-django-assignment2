@@ -72,14 +72,9 @@ class TagToPostListView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
-        tag = request.data["tag"]
-        tag_to_post_list = blog_models.TagToPost.objects.filter(tag=tag)
-
-        posts = []
-        for tag_to_post in tag_to_post_list:
-            pid = tag_to_post.post.pid
-            posts.append(blog_models.Post.objects.get(pid=pid))
-
+        tags_data = request.data["tags"]
+        tag_names = [t["name"] for t in tags_data] 
+        posts = blog_models.Post.objects.filter(tags__name__in=tag_names)
         serializer = blog_serializers.PostSerializer(posts, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -90,13 +85,8 @@ class TagToCommentListView(views.APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, format=None):
-        tag = request.data["tag"]
-        tag_to_comment_list = blog_models.TagToComment.objects.filter(tag=tag)
-
-        comments = []
-        for tag_to_comment in tag_to_comment_list:
-            cid = tag_to_comment.comment.cid
-            comments.append(blog_models.Comment.objects.get(cid=cid))
-
+        tags_data = request.data["tags"]
+        tag_names = [t["name"] for t in tags_data] 
+        comments = blog_models.Comment.objects.filter(tags__name__in=tag_names)
         serializer = blog_serializers.CommentSerializer(comments, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
