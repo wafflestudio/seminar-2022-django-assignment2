@@ -29,10 +29,8 @@ You have to change `username` and `password` in [settings.py](https://github.com
 - [isort](https://pycqa.github.io/isort/)
 
 
-Before add & commit to branch. 
-```bash
-$ sh reformat.sh # -> black, isort
-```
+This project used precommit-hook, so you have to execute command `yarn install` at project root directory.
+And then, precommit-hook will automatically check your commit, and reformatting.
 
 # 
 ## API Summary
