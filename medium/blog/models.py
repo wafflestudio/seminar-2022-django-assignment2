@@ -20,7 +20,7 @@ class Post(models.Model):
         db_table = "posts"
 
     def __str__(self):
-        return self.title
+        return str(self.title)
 
 
 class Comment(models.Model):
@@ -49,11 +49,9 @@ class TagToPost(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
 
 class TagToComment(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
