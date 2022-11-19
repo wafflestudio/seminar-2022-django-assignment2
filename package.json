@@ -1,0 +1,18 @@
+{
+  "name": "waffle-assignment2",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "precommit:medium/py": "cd ./medium && yarn precommit:py",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.2"
+  },
+  "lint-staged": {
+    "medium/**/*.py":  [
+      "yarn precommit:medium/py"
+    ]
+  }
+}
