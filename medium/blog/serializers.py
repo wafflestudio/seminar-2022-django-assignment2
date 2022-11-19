@@ -31,9 +31,7 @@ class PostSerializer(serializers.ModelSerializer):
     def many_init(cls, *args, **kwargs):
         serializer = super().many_init(*args, **kwargs)
         for i, data in enumerate(serializer.data):
-            serializer.data[i]["content"] = data["content"][
-                :_POST_LIST_CONTENT_MAX_LENGTH
-            ]
+            serializer.data[i]["content"] = data["content"][:_POST_LIST_CONTENT_MAX_LENGTH]
         return serializer
 
     def create(self, validated_data: Dict):

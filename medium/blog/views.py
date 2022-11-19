@@ -45,9 +45,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
         return super().get(request, *args, **kwargs)
 
 
-class CommentUpdateDestroyView(
-    mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView
-):
+class CommentUpdateDestroyView(mixins.UpdateModelMixin, mixins.DestroyModelMixin, generics.GenericAPIView):
     authentication_classes = [authentication.TokenAuthentication]
     permission_classes = [blog_permissions.IsCommentCreator]
     queryset = blog_models.Comment.objects.all()
@@ -72,13 +70,11 @@ class TagToPostListView(views.APIView):
     pagination_class = blog_paginations.PostListPagination
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format=None):
+    def get(self, request):
         tag_data_list = request.data["tags"]
         option = request.data.get("option", tag_option.DEFAULT)
 
-        posts = tag_option.TagOptions.tag_filter(
-            blog_models.Post, tag_data_list, option
-        )
+        posts = tag_option.TagOptions.tag_filter(blog_models.Post, tag_data_list, option)
         serializer = blog_serializers.PostSerializer(posts, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -88,11 +84,9 @@ class TagToCommentListView(views.APIView):
     pagination_class = blog_paginations.CommentListPagination
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request, format=None):
+    def get(self, request):
         tag_data_list = request.data["tags"]
         option = request.data.get("option", tag_option.DEFAULT)
-        comments = tag_option.TagOptions.tag_filter(
-            blog_models.Comment, tag_data_list, option
-        )
+        comments = tag_option.TagOptions.tag_filter(blog_models.Comment, tag_data_list, option)
         serializer = blog_serializers.CommentSerializer(comments, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)

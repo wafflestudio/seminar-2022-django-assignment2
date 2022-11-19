@@ -26,15 +26,11 @@ class TagOptions(str, enum.Enum):
         target_model: Type[models.Model],
         tag_data_list: List,
         initial_option: str,
-    ) -> models.QuerySet[
-        Optional[Union[blog_models.Post, blog_models.Comment]]
-    ]:
+    ) -> models.QuerySet[Optional[Union[blog_models.Post, blog_models.Comment]]]:
         (is_valid, option) = cls.validate_option(initial_option)
 
         if not is_valid:
-            raise exceptions.ValidationError(
-                f"Option '{option}' is invalid. Option must be either 'or' or 'and'"
-            )
+            raise exceptions.ValidationError(f"Option '{option}' is invalid. Option must be either 'or' or 'and'")
 
         tag_names = [tag_data["name"] for tag_data in tag_data_list]
 
@@ -43,8 +39,6 @@ class TagOptions(str, enum.Enum):
             for tag_name in tag_names:
                 objects = objects.filter(tags__name=tag_name)
         elif option == cls.OR:
-            objects = target_model.objects.filter(
-                tags__name__in=tag_names
-            ).distinct()
+            objects = target_model.objects.filter(tags__name__in=tag_names).distinct()
 
         return objects

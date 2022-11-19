@@ -1,0 +1,9 @@
+#!/bin/sh
+
+if [[ "${GIT_SUBREPO_RUNNING}" != "" ]]; then
+  exit
+fi
+
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged
