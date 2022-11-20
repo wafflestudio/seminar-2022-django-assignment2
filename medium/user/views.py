@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from rest_framework import authentication
 from rest_framework import generics
 from rest_framework import permissions
+from rest_framework import request as req
 from rest_framework import response
 from rest_framework import status
 from rest_framework import views
@@ -17,7 +18,7 @@ class SignUpView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = user_serializers.RegisterSerializer
 
-    def create(self, request, *args, **kwargs):
+    def create(self, request: req.Request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
@@ -30,7 +31,7 @@ class SignUpView(generics.CreateAPIView):
 
 
 class LoginView(views.APIView):
-    def post(self, request):
+    def post(self, request: req.Request):
         user = auth.authenticate(**request.data)
         if user is not None:
             token = token_models.Token.objects.get(user=user)
