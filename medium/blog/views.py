@@ -2,6 +2,7 @@ from rest_framework import authentication
 from rest_framework import generics
 from rest_framework import mixins
 from rest_framework import permissions
+from rest_framework import request as req
 from rest_framework import response
 from rest_framework import status
 from rest_framework import views
@@ -36,11 +37,11 @@ class CommentListCreateView(generics.ListCreateAPIView):
     queryset = blog_models.Comment.objects.all()
     serializer_class = blog_serializers.CommentSerializer
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: req.Request, *args, **kwargs):
         request.data["post"] = kwargs.get("pid")
         return super().post(request, *args, **kwargs)
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request: req.Request, *args, **kwargs):
         request.data["post"] = kwargs.get("pid")
         return super().get(request, *args, **kwargs)
 
@@ -52,15 +53,15 @@ class CommentUpdateDestroyView(mixins.UpdateModelMixin, mixins.DestroyModelMixin
     serializer_class = blog_serializers.CommentSerializer
     lookup_field = "cid"
 
-    def put(self, request, *args, **kwargs):
+    def put(self, request: req.Request, *args, **kwargs):
         request.data["post"] = kwargs.get("pid")
         return self.update(request, *args, **kwargs)
 
-    def patch(self, request, *args, **kwargs):
+    def patch(self, request: req.Request, *args, **kwargs):
         request.data["post"] = kwargs.get("pid")
         return self.partial_update(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
+    def delete(self, request: req.Request, *args, **kwargs):
         request.data["post"] = kwargs.get("pid")
         return self.destroy(request, *args, **kwargs)
 
@@ -70,10 +71,9 @@ class TagToPostListView(views.APIView):
     pagination_class = blog_paginations.PostListPagination
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request):
-        tag_data_list = request.data["tags"]
+    def get(self, request: req.Request):
+        tag_data_list = request.data.get("tags")
         option = request.data.get("option", tag_option.DEFAULT)
-
         posts = tag_option.TagOptions.tag_filter(blog_models.Post, tag_data_list, option)
         serializer = blog_serializers.PostSerializer(posts, many=True)
         return response.Response(serializer.data, status=status.HTTP_200_OK)
@@ -84,8 +84,8 @@ class TagToCommentListView(views.APIView):
     pagination_class = blog_paginations.CommentListPagination
     permission_classes = [permissions.AllowAny]
 
-    def get(self, request):
-        tag_data_list = request.data["tags"]
+    def get(self, request: req.Request):
+        tag_data_list = request.data.get("tags")
         option = request.data.get("option", tag_option.DEFAULT)
         comments = tag_option.TagOptions.tag_filter(blog_models.Comment, tag_data_list, option)
         serializer = blog_serializers.CommentSerializer(comments, many=True)
