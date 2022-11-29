@@ -1,5 +1,5 @@
 from knox.models import AuthToken
-from rest_framework import generics
+from rest_framework import generics, mixins
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView
 from rest_framework.pagination import CursorPagination
@@ -78,7 +78,7 @@ class CommentListCreateView(generics.ListCreateAPIView):
         raise PermissionDenied(message)
 
 
-class CommentRetrieveUpdateDestroyView(generics.UpdateAPIView, generics.DestroyAPIView, GenericAPIView):
+class CommentRetrieveUpdateDestroyView(mixins.UpdateModelMixin, mixins.DestroyModelMixin,  GenericAPIView):
     permission_classes = [IsCreatorOrReadOnly | IsAdminUser]
     serializer_class = CommentListSerializer
     queryset = Comment.objects.all()
